@@ -42,50 +42,58 @@
 
         <!-- Ideate -->
         <!-- Update Ideate page with proper controls -->
+        <!-- Update Ideate page structure -->
         <div id="ideate" class="page">
             <div class="two-column">
+                <!-- Input Column -->
                 <div class="column">
                     <h2>Input</h2>
+                    <select id="inputType" class="select-control">
+                        <option value="">Select input type...</option>
+                        <option value="text">Text</option>
+                        <option value="image">Image Upload</option>
+                        <option value="webcam">Webcam</option>
+                        <option value="audio">Voice Recording</option>
+                    </select>
+                    
                     <div class="input-controls">
-                        <select id="inputType" onchange="handleInputChange()">
-                            <option value="">Select input type...</option>
-                            <option value="text">Text</option>
-                            <option value="image">Image</option>
-                            <option value="webcam">Webcam</option>
-                            <option value="audio">Voice</option>
-                        </select>
-                        
+                        <!-- Text Input -->
                         <div id="textInput" class="input-section hidden">
                             <textarea id="userText" placeholder="Enter your text here..."></textarea>
                         </div>
                         
+                        <!-- Image Input -->
                         <div id="imageInput" class="input-section hidden">
                             <input type="file" id="imageUpload" accept="image/*">
                             <img id="imagePreview" class="hidden">
                         </div>
                         
+                        <!-- Webcam Input -->
                         <div id="webcamInput" class="input-section hidden">
                             <video id="webcam" autoplay></video>
                             <button id="captureButton">Take Photo</button>
                             <canvas id="canvas" class="hidden"></canvas>
                         </div>
                         
+                        <!-- Audio Input -->
                         <div id="audioInput" class="input-section hidden">
                             <button id="recordButton">Start Recording</button>
-                            <textarea id="transcription" readonly placeholder="Transcription will appear here..."></textarea>
+                            <textarea id="transcription" readonly class="hidden"></textarea>
                         </div>
                     </div>
                 </div>
                 
+                <!-- Output Column -->
                 <div class="column">
                     <h2>Output</h2>
+                    <select id="outputType" class="select-control hidden">
+                        <option value="">Select output type...</option>
+                        <option value="text">Text</option>
+                        <option value="image">Image</option>
+                    </select>
+                    
                     <div class="output-controls">
-                        <select id="outputType">
-                            <option value="">Select output type...</option>
-                            <option value="text">Text</option>
-                            <option value="image">Image</option>
-                        </select>
-                        <button id="generateOutput">Generate</button>
+                        <button id="generateOutput" class="hidden">Generate</button>
                         <textarea id="outputBox" readonly class="hidden"></textarea>
                         <img id="outputImage" class="hidden">
                         <button id="downloadImage" class="hidden">Download Image</button>

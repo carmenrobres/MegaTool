@@ -1,40 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize sidebar controls
-    document.getElementById("openSidebar")?.addEventListener("click", function() {
-        document.getElementById("sidebar").classList.add("open");
-    });
-
-    document.getElementById("closeSidebar")?.addEventListener("click", function() {
-        document.getElementById("sidebar").classList.remove("open");
-    });
-
-    // Global navigation function
-    window.navigateTo = function(pageId) {
-        document.querySelectorAll(".page").forEach(page => {
-            page.style.display = 'none';
-        });
-        const targetPage = document.getElementById(pageId);
-        if (targetPage) {
-            targetPage.style.display = 'block';
-            localStorage.setItem("lastPage", pageId);
-        }
-    };
-
-    // Load initial page
-    const savedPage = localStorage.getItem("lastPage") || "landing";
-    navigateTo(savedPage);
+    // Add event listener for output type change
+    document.getElementById("outputType")?.addEventListener("change", handleOutputTypeChange);
+    
+    // Add event listener for generate button
+    document.getElementById("generateOutput")?.addEventListener("click", generateOutput);
 });
 
-function handleInputChange() {
-    document.querySelectorAll(".input-section").forEach(section => section.classList.add("hidden"));
-    const selectedInput = document.getElementById("inputType").value;
-    document.getElementById(selectedInput + "Input").classList.remove("hidden");
+function handleOutputTypeChange() {
+    const outputType = document.getElementById("outputType").value;
+    const generateButton = document.getElementById("generateOutput");
     
-    if (selectedInput === "webcam") {
-        startWebcam();
-    }
+    // Show generate button only when output type is selected
+    generateButton.classList.toggle("hidden", !outputType);
+    
+    // Hide all output elements
+    document.getElementById("outputBox").classList.add("hidden");
+    document.getElementById("outputImage").classList.add("hidden");
+    document.getElementById("downloadImage").classList.add("hidden");
 }
 
+  
 // Fixing Output Generation to support Text and Image
 async function generateOutput() {
     const apiKey = document.getElementById("apiKey").value;

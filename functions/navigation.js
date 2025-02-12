@@ -1,4 +1,4 @@
-// Single event listener for DOM loading
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize sidebar controls
     document.getElementById("openSidebar")?.addEventListener("click", function() {
@@ -9,24 +9,22 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("sidebar").classList.remove("open");
     });
 
-    // Load last visited page or default to landing
+    // Global navigation function
+    window.navigateTo = function(pageId) {
+        document.querySelectorAll(".page").forEach(page => {
+            page.style.display = 'none';
+        });
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.style.display = 'block';
+            localStorage.setItem("lastPage", pageId);
+        }
+    };
+
+    // Load initial page
     const savedPage = localStorage.getItem("lastPage") || "landing";
     navigateTo(savedPage);
 });
-
-// Global navigation function
-window.navigateTo = function(pageId) {
-    document.querySelectorAll(".page").forEach(page => {
-        page.classList.add("hidden");
-        page.classList.remove("active");
-    });
-    const targetPage = document.getElementById(pageId);
-    if (targetPage) {
-        targetPage.classList.remove("hidden");
-        targetPage.classList.add("active");
-        localStorage.setItem("lastPage", pageId);
-    }
-};
 
 // Initialize on load
 document.addEventListener('DOMContentLoaded', function() {
