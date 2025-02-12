@@ -1,22 +1,29 @@
-document.getElementById("openSidebar").addEventListener("click", function() {
-    document.getElementById("sidebar").classList.add("open");
-});
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize sidebar controls
+    document.getElementById("openSidebar")?.addEventListener("click", function() {
+        document.getElementById("sidebar").classList.add("open");
+    });
 
-document.getElementById("closeSidebar").addEventListener("click", function() {
-    document.getElementById("sidebar").classList.remove("open");
-});
+    document.getElementById("closeSidebar")?.addEventListener("click", function() {
+        document.getElementById("sidebar").classList.remove("open");
+    });
 
-function navigateTo(pageId) {
-    document.querySelectorAll(".page").forEach(page => page.classList.add("hidden"));
-    document.getElementById(pageId).classList.remove("hidden");
-    localStorage.setItem("lastPage", pageId);
-}
+    // Global navigation function
+    window.navigateTo = function(pageId) {
+        document.querySelectorAll(".page").forEach(page => {
+            page.style.display = 'none';
+        });
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.style.display = 'block';
+            localStorage.setItem("lastPage", pageId);
+        }
+    };
 
-// Load the last page viewed if user navigates back
-window.onload = function() {
+    // Load initial page
     const savedPage = localStorage.getItem("lastPage") || "landing";
     navigateTo(savedPage);
-};
+});
 
 function handleInputChange() {
     document.querySelectorAll(".input-section").forEach(section => section.classList.add("hidden"));

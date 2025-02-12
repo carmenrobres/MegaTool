@@ -3,99 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatGPT Transcriber</title>
+    <title>MegaTool</title>
     <link rel="stylesheet" href="styles.css">
-    <script defer src="functions/navigation.js"></script>
-    <script defer src="functions/input.js"></script>
-    <script defer src="functions/output.js"></script>
-
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <button id="closeSidebar">&times;</button>
-        <h2>Settings</h2>
-        <label for="apiKey">Enter your ChatGPT API Key:</label>
-        <input type="text" id="apiKey" placeholder="Your OpenAI API Key">
-    </div>
-    
-    <!-- Hamburger Menu -->
-    <button id="openSidebar" class="hamburger">&#9776;</button>
-    
-    <!-- Navigation Bar -->
+    <!-- Navigation -->
     <nav class="navbar">
-        <button onclick="navigateTo('landing')">Home</button>
-        <button onclick="navigateTo('ideate')">Ideate</button>
-        <button onclick="navigateTo('make')">Make</button>
-    </nav>
-    
-    <!-- Main App Container -->
-    <div id="app">
-        <!-- Landing Page -->
-        <div id="landing" class="page">
-            <h1>What do you want?</h1>
+        <a href="#" class="navbar-brand">MegaTool</a>
+        <div class="navbar-links">
+            <button onclick="navigateTo('landing')">Home</button>
             <button onclick="navigateTo('ideate')">Ideate</button>
             <button onclick="navigateTo('make')">Make</button>
+            <button id="openSidebar">⚙️</button>
         </div>
+    </nav>
 
-        <!-- Ideate (Transcription Page) -->
-        <div id="ideate" class="page hidden">
-            <h1>Ideate</h1>
-            <label for="inputType">Choose an input method:</label>
-            <select id="inputType" onchange="handleInputChange()">
-                <option value="text">Text</option>
-                <option value="image">Image</option>
-                <option value="webcam">Webcam</option>
-                <option value="audio">Recording Audio</option>
-            </select>
-            
-            <!-- Text Input -->
-            <div id="textInput" class="input-section">
-                <textarea id="userText" placeholder="Type your text here..."></textarea>
-            </div>
-            
-            <!-- Image Upload -->
-            <div id="imageInput" class="input-section hidden">
-                <input type="file" id="imageUpload" accept="image/*">
-                <img id="imagePreview" class="hidden" />
-            </div>
-            
-            <!-- Webcam Capture -->
-            <div id="webcamInput" class="input-section hidden">
-                <video id="webcam" autoplay></video>
-                <button id="captureButton">Capture</button>
-                <canvas id="canvas" class="hidden"></canvas>
-                <img id="capturedImage" class="hidden" />
-            </div>
-            
-            <!-- Audio Recording -->
-            <div id="audioInput" class="input-section hidden">
-                <button id="recordButton">Start Recording</button>
-                <textarea id="transcription" placeholder="Transcribed text will appear here..." rows="4"></textarea>
-            </div>
-            
-            <!-- Output Generation -->
-            <h2>Generate Output</h2>
-                <label for="outputType">Choose output type:</label>
-                <select id="outputType">
-                    <option value="text">Text</option>
-                    <option value="image">Image</option>
-                </select>
-                <button id="generateOutput">Generate</button>
-
-                <!-- Text Output Box -->
-                <textarea id="outputBox" placeholder="Generated output will appear here..." rows="4" readonly></textarea>
-
-                <!-- Image Output -->
-                <img id="outputImage" class="hidden" />
-
-        </div>
-
-        <!-- Make (Blank Page for Now) -->
-        <div id="make" class="page hidden">
-            <h1>Make Page</h1>
-            <p>Content coming soon...</p>
+    <!-- API Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button id="closeSidebar">&times;</button>
+        <h2>API Settings</h2>
+        <div class="api-section">
+            <label for="apiKey">OpenAI API Key:</label>
+            <input type="password" id="apiKey" placeholder="Enter your API key">
         </div>
     </div>
+
+    <!-- Pages -->
+    <main>
+        <!-- Landing -->
+        <div id="landing" class="page">
+            <h1>Welcome to MegaTool</h1>
+            <p>Your creative companion for prototyping</p>
+            <div class="landing-buttons">
+                <button onclick="navigateTo('ideate')">Start Ideating</button>
+                <button onclick="navigateTo('make')">Make Something</button>
+            </div>
+        </div>
+
+        <!-- Ideate -->
+        <!-- Update Ideate page with proper controls -->
+        <div id="ideate" class="page">
+            <div class="two-column">
+                <div class="column">
+                    <h2>Input</h2>
+                    <div class="input-controls">
+                        <select id="inputType" onchange="handleInputChange()">
+                            <option value="">Select input type...</option>
+                            <option value="text">Text</option>
+                            <option value="image">Image</option>
+                            <option value="webcam">Webcam</option>
+                            <option value="audio">Voice</option>
+                        </select>
+                        
+                        <div id="textInput" class="input-section hidden">
+                            <textarea id="userText" placeholder="Enter your text here..."></textarea>
+                        </div>
+                        
+                        <div id="imageInput" class="input-section hidden">
+                            <input type="file" id="imageUpload" accept="image/*">
+                            <img id="imagePreview" class="hidden">
+                        </div>
+                        
+                        <div id="webcamInput" class="input-section hidden">
+                            <video id="webcam" autoplay></video>
+                            <button id="captureButton">Take Photo</button>
+                            <canvas id="canvas" class="hidden"></canvas>
+                        </div>
+                        
+                        <div id="audioInput" class="input-section hidden">
+                            <button id="recordButton">Start Recording</button>
+                            <textarea id="transcription" readonly placeholder="Transcription will appear here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <h2>Output</h2>
+                    <div class="output-controls">
+                        <select id="outputType">
+                            <option value="">Select output type...</option>
+                            <option value="text">Text</option>
+                            <option value="image">Image</option>
+                        </select>
+                        <button id="generateOutput">Generate</button>
+                        <textarea id="outputBox" readonly class="hidden"></textarea>
+                        <img id="outputImage" class="hidden">
+                        <button id="downloadImage" class="hidden">Download Image</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Make -->
+        <div id="make" class="page">
+            <div class="coming-soon">
+                <h2>Coming Soon</h2>
+                <p>We're working on something amazing!</p>
+            </div>
+        </div>
+    </main>
+    <script src="functions/navigation.js"></script>
+    <script src="functions/input.js"></script>
+    <script src="functions/output.js"></script>
+    
 </body>
 </html>
