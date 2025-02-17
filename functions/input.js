@@ -328,16 +328,23 @@ async function refinePrompt() {
             break;
 
         case "image_generation":
-            refinementPrompt = `Analyze the following description and refine it into a detailed prompt for AI image generation. Ensure the composition, lighting, style, and key details are included.  
-
-            Input: "${inputText}"
-
-            Respond with this exact format:
+            refinementPrompt = `Refine the following text into a structured and detailed prompt for AI image generation.  
+        
+            Ensure the refined prompt:
+            - Clearly describes the **subject** and **composition**.
+            - Specifies **lighting, colors, and atmosphere**.
+            - Defines **style or artistic approach** (e.g., photorealistic, cyberpunk, watercolor).
+            - Avoids vague concepts like "beautiful" or "amazing"—instead, describe specific details.
+        
+            **Input:**  
+            "${inputText}"
+        
+            **Respond with this exact format:**
             ---
-            Refined Prompt: "[Improved Image Generation prompt]"
+            Refined Prompt: "[Detailed Image Generation prompt]"
             ---`;
             break;
-
+            
         default:
             alert("Invalid refinement type.");
             return;
@@ -366,25 +373,28 @@ async function refinePrompt() {
         const refinedText = result.choices[0].message.content.trim();
 
         // **Fixed Parsing Logic**
-        const suitabilityMatch = refinedText.match(/Suitability: (.+)/);
-        const promptMatch = refinedText.match(/Refined Prompt: "(.*)"/);
+        const suitabilityMatch = refinedText.match(/Suitability:\s*"?([\s\S]+?)"?\s*Refined Prompt:/);
+        const promptMatch = refinedText.match(/Refined Prompt:\s*"?([\s\S]+?)"?\s*---/);
 
-        if (suitabilityMatch && promptMatch) {
-            const suitability = suitabilityMatch[1].trim();
+        if (promptMatch) {
             const prompt = promptMatch[1].trim();
-
-            // Display Suitability (non-editable)
-            suitabilityText.textContent = suitability;
-            suitabilityOutput.classList.remove("hidden");
-
-            // Display Refined Prompt (editable)
             refinedOutput.value = prompt;
             refinedOutput.readOnly = false;
             refinedOutput.classList.remove("hidden");
+
+            if (suitabilityMatch) {
+                const suitability = suitabilityMatch[1].trim();
+                suitabilityText.textContent = suitability;
+                suitabilityOutput.classList.remove("hidden");
+            } else {
+                // If there's no suitability, just hide that section
+                suitabilityOutput.classList.add("hidden");
+            }
         } else {
             console.error("Failed to parse AI response:", refinedText);
-            alert("Failed to parse the refined output. Please try again.");
+            alert("Unexpected AI response format. Try again.");
         }
+
     } catch (error) {
         console.error("Error refining prompt:", error);
         alert("Network error! Please check your internet connection and API key.");

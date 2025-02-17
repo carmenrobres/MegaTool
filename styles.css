@@ -251,3 +251,27 @@
   font-size: 14px;
   color: #333;
 }
+
+#downloadImage {
+  background-color: #28a745; /* Green color */
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin-top: 10px;
+}
+
+#downloadImage:hover {
+  background-color: #218838; /* Darker green */
+}
+
+#outputImage {
+  max-width: 100%; /* Ensures the image does not overflow */
+  height: auto; /* Maintains aspect ratio */
+  display: block; /* Prevents inline issues */
+  margin: 10px auto; /* Centers the image */
+  border-radius: 8px; /* Optional: rounded edges */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: adds a subtle shadow */
+}
