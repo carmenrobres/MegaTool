@@ -60,23 +60,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Webcam Capture Fix
-    document.getElementById("captureButton")?.addEventListener("click", function () {
-        const webcam = document.getElementById('webcam');
-        const canvas = document.getElementById('canvas');
-        const imagePreview = document.getElementById('capturedImage');
+   // Webcam Capture Fix
+document.getElementById("captureButton")?.addEventListener("click", function () {
+    const webcam = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const capturedImage = document.getElementById('capturedImage'); // Get the capturedImage element
 
-        if (!webcam.srcObject) {
-            alert('Webcam not active. Please wait or refresh.');
-            return;
-        }
+    if (!webcam.srcObject) {
+        alert('Webcam not active. Please wait or refresh.');
+        return;
+    }
 
-        if (webcam.readyState !== 4) {
-            alert('Webcam is not ready yet. Try again.');
-            return;
-        }
+    if (webcam.readyState !== 4) {
+        alert('Webcam is not ready yet. Try again.');
+        return;
+    }
 
-        // Ensure the video has been properly drawn before capture
-        setTimeout(() => {
+    // Ensure the video has been properly drawn before capture
+    setTimeout(() => {
             canvas.width = webcam.videoWidth;
             canvas.height = webcam.videoHeight;
             const ctx = canvas.getContext('2d');
@@ -85,13 +86,25 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
 
             // Convert to image & display preview
-            imagePreview.src = canvas.toDataURL('image/png');
-            imagePreview.classList.remove("hidden");
+            capturedImage.src = canvas.toDataURL('image/png');
+            capturedImage.classList.remove("hidden");
 
             // Stop the webcam after capture
             stopWebcam();
         }, 100); // Delay ensures the last frame is properly drawn
     });
+
+
+    document.getElementById("downloadCapturedImage")?.addEventListener("click", function () {
+        const capturedImage = document.getElementById('capturedImage');
+        const link = document.createElement('a');
+        link.href = capturedImage.src;
+        link.download = 'captured_image.png';
+        link.click();
+    });
+
+    document.getElementById("capturedImage").classList.remove("hidden");
+    document.getElementById("downloadCapturedImage").classList.remove("hidden");
 
     // Stop webcam function
     function stopWebcam() {
