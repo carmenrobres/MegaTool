@@ -131,20 +131,24 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
             await initAudio();
             return;
         }
-
+    
         if (!isRecording) {
             mediaRecorder = new MediaRecorder(stream);
             audioChunks = [];
-
+    
             mediaRecorder.ondataavailable = (event) => {
                 audioChunks.push(event.data);
             };
-
+    
             mediaRecorder.onstop = async () => {
                 const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+    
+                // Stop the microphone immediately after recording
+                stopAudioStream();
+    
                 await sendToOpenAI(audioBlob);
             };
-
+    
             mediaRecorder.start();
             isRecording = true;
             this.textContent = "Stop Recording";
@@ -154,6 +158,15 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
             this.textContent = "Start Recording";
         }
     });
+    
+    // Stop the microphone stream when done recording
+    function stopAudioStream() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop()); // Stop all tracks
+            stream = null;
+        }
+    }
+    
 
     // Send Audio to OpenAI
     async function sendToOpenAI(audioBlob) {
@@ -179,11 +192,14 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
 
             const result = await response.json();
             if (result.text) {
-                document.getElementById("transcription").value = result.text;
+                const transcriptionBox = document.getElementById("transcription");
+                transcriptionBox.value = result.text;
+                transcriptionBox.readOnly = false; // Make it editable
             } else {
                 console.error("Error in transcription:", result);
                 alert("Failed to transcribe the audio.");
             }
+            
         } catch (error) {
             console.error("Error sending audio:", error);
             alert("An error occurred while processing the audio.");
@@ -212,3 +228,165 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
     document.getElementById("inputType")?.addEventListener("change", handleInputChange);
     window.addEventListener('beforeunload', stopAllMedia);
 });
+
+// Refinement Functionality
+document.addEventListener('DOMContentLoaded', function () {
+    // Add event listeners for refinement buttons
+    document.getElementById("refineButton")?.addEventListener("click", refinePrompt);
+    document.getElementById("refineButtonAudio")?.addEventListener("click", refinePrompt);
+    
+    // Show refinement section when text or audio input is active
+    document.getElementById("inputType")?.addEventListener("change", function () {
+        const inputType = this.value;
+        const refinementSection = document.getElementById("refinementSection");
+        const refinementSectionAudio = document.getElementById("refinementSectionAudio");
+
+        if (inputType === "text") {
+            refinementSection.classList.remove("hidden");
+            refinementSectionAudio.classList.add("hidden");
+        } else if (inputType === "audio") {
+            refinementSectionAudio.classList.remove("hidden");
+            refinementSection.classList.add("hidden");
+        } else {
+            refinementSection.classList.add("hidden");
+            refinementSectionAudio.classList.add("hidden");
+        }
+    });
+});
+
+// Refine Prompt Function
+async function refinePrompt() {
+    const apiKey = document.getElementById("apiKey").value;
+    const inputType = document.getElementById("inputType").value; // Get the selected input type
+    const inputText = inputType === "text" 
+        ? document.getElementById("userText")?.value.trim() 
+        : document.getElementById("transcription")?.value.trim();
+    const refinementType = document.getElementById("refinementType")?.value || document.getElementById("refinementTypeAudio")?.value;
+
+    // Get output elements based on input type
+    const suitabilityOutput = inputType === "text" 
+        ? document.getElementById("suitabilityOutput") 
+        : document.getElementById("suitabilityOutputAudio");
+    const suitabilityText = inputType === "text" 
+        ? document.getElementById("suitabilityText") 
+        : document.getElementById("suitabilityTextAudio");
+    const refinedOutput = inputType === "text" 
+        ? document.getElementById("refinedOutput") 
+        : document.getElementById("refinedOutputAudio");
+
+    if (!apiKey) {
+        alert("Please enter your OpenAI API Key.");
+        return;
+    }
+
+    if (!inputText) {
+        alert("Please provide input text before refining.");
+        return;
+    }
+
+    if (!refinementType) {
+        alert("Please select a refinement type.");
+        return;
+    }
+
+    // Define structured prompt for API call
+    let refinementPrompt = "";
+    switch (refinementType) {
+        case "3d_cad":
+            refinementPrompt = `Analyze the following description and determine if CAD is the best format for creating this object. If it is, explain why. If not, explain why another format (e.g., 3D Mesh) might be better.  
+
+            Then, refine the input into a structured CAD modeling prompt using the following best practices:
+            - The object must be described in terms of **geometric shapes** (e.g., cylinders, cubes, spheres).
+            - Be **explicit about dimensions** (e.g., "a plate with four 5mm holes evenly spaced").
+            - **Assemblies are difficult**, so the prompt should focus on a **single object** rather than multiple interconnected parts.
+            - **Shorter prompts** (1-2 sentences) succeed more often than longer ones.
+            - If key dimensions are missing, fill in reasonable estimates.
+
+            **Input:**  
+            "${inputText}"
+
+            **Respond with this exact format:**
+            ---
+            Suitability: [CAD is/is not the best format because ...]
+            Refined Prompt: "[Improved CAD modeling prompt following best practices]"
+            ---`;
+            break;
+
+
+        case "3d_mesh":
+            refinementPrompt = `Analyze the following description and determine if a 3D Mesh is the best format for creating this object. If it is, explain why. If not, explain why another format (e.g., CAD) might be better.  
+
+            Then, refine the input into a structured 3D Mesh modeling prompt based on the best possible representation.  
+
+            Input: "${inputText}"
+
+            Respond with this exact format:
+            ---
+            Suitability: [Mesh is/is not the best format because ...]
+            Refined Prompt: "[Improved Mesh modeling prompt]"
+            ---`;
+            break;
+
+        case "image_generation":
+            refinementPrompt = `Analyze the following description and refine it into a detailed prompt for AI image generation. Ensure the composition, lighting, style, and key details are included.  
+
+            Input: "${inputText}"
+
+            Respond with this exact format:
+            ---
+            Refined Prompt: "[Improved Image Generation prompt]"
+            ---`;
+            break;
+
+        default:
+            alert("Invalid refinement type.");
+            return;
+    }
+
+    // Call OpenAI API to refine the prompt
+    try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "gpt-4",
+                messages: [{ role: "user", content: refinementPrompt }],
+                max_tokens: 200
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        const refinedText = result.choices[0].message.content.trim();
+
+        // **Fixed Parsing Logic**
+        const suitabilityMatch = refinedText.match(/Suitability: (.+)/);
+        const promptMatch = refinedText.match(/Refined Prompt: "(.*)"/);
+
+        if (suitabilityMatch && promptMatch) {
+            const suitability = suitabilityMatch[1].trim();
+            const prompt = promptMatch[1].trim();
+
+            // Display Suitability (non-editable)
+            suitabilityText.textContent = suitability;
+            suitabilityOutput.classList.remove("hidden");
+
+            // Display Refined Prompt (editable)
+            refinedOutput.value = prompt;
+            refinedOutput.readOnly = false;
+            refinedOutput.classList.remove("hidden");
+        } else {
+            console.error("Failed to parse AI response:", refinedText);
+            alert("Failed to parse the refined output. Please try again.");
+        }
+    } catch (error) {
+        console.error("Error refining prompt:", error);
+        alert("Network error! Please check your internet connection and API key.");
+    }
+}

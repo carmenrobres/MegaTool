@@ -57,11 +57,7 @@
                     </select>
                     
                     <div class="input-controls">
-                        <!-- Text Input -->
-                        <div id="textInput" class="input-section hidden">
-                            <textarea id="userText" placeholder="Enter your text here..."></textarea>
-                        </div>
-                        
+                       
                         <!-- Image Input -->
                         <div id="imageInput" class="input-section hidden">
                             <input type="file" id="imageUpload" accept="image/*">
@@ -76,11 +72,53 @@
                             <img id="capturedImage" class="hidden"> <!-- Add this line -->
                             <button id="downloadCapturedImage" class="hidden">Download Image</button>
                         </div>
-                        
+                                                <!-- Text Input -->
+                        <!-- Text Input -->
+                        <div id="textInput" class="input-section hidden">
+                            <textarea id="userText" placeholder="Enter your text here..."></textarea>
+                            <!-- Add Refinement Section -->
+                            <div id="refinementSection" class="hidden">
+                                <label for="refinementType">Refine for:</label>
+                                <select id="refinementType">
+                                    <option value="">Select refinement type...</option>
+                                    <option value="3d_cad">3D CAD</option>
+                                    <option value="3d_mesh">3D Mesh</option>
+                                    <option value="image_generation">Image Generation</option>
+                                </select>
+                                <button id="refineButton">Refine</button>
+                            </div>
+                            <!-- Suitability Output (non-editable) -->
+                            <div id="suitabilityOutput" class="hidden">
+                                <h3>Suitability:</h3>
+                                <p id="suitabilityText"></p> <!-- Non-editable text -->
+                            </div>
+                            <!-- Refined Prompt Output (editable) -->
+                            <textarea id="refinedOutput" placeholder="Refined prompt will appear here..." readonly></textarea>
+                        </div>
+
+                        <!-- Audio Input -->
                         <!-- Audio Input -->
                         <div id="audioInput" class="input-section hidden">
                             <button id="recordButton">Start Recording</button>
-                            <textarea id="transcription" readonly class="hidden"></textarea>
+                            <textarea id="transcription" class="hidden"></textarea>
+                            <!-- Add Refinement Section -->
+                            <div id="refinementSectionAudio" class="hidden">
+                                <label for="refinementTypeAudio">Refine for:</label>
+                                <select id="refinementTypeAudio">
+                                    <option value="">Select refinement type...</option>
+                                    <option value="3d_cad">3D CAD</option>
+                                    <option value="3d_mesh">3D Mesh</option>
+                                    <option value="image_generation">Image Generation</option>
+                                </select>
+                                <button id="refineButtonAudio">Refine</button>
+                            </div>
+                            <!-- Suitability Output (non-editable) -->
+                            <div id="suitabilityOutputAudio" class="hidden">
+                                <h3>Suitability:</h3>
+                                <p id="suitabilityTextAudio"></p> <!-- Non-editable text -->
+                            </div>
+                            <!-- Refined Prompt Output (editable) -->
+                            <textarea id="refinedOutputAudio" placeholder="Refined prompt will appear here..." readonly></textarea>
                         </div>
                     </div>
                 </div>
