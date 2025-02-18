@@ -24,7 +24,15 @@
         <h2>API Settings</h2>
         <div class="api-section">
             <label for="apiKey">OpenAI API Key:</label>
-            <input type="password" id="apiKey" placeholder="Enter your API key">
+            <input type="password" id="apiKey" placeholder="Enter your OpenAI API key">
+
+            <!-- Add ZooCAD API Key Input -->
+            <label for="zoocadApiKey">ZooCAD API Key:</label>
+            <input type="password" id="zoocadApiKey" placeholder="Enter your ZooCAD API key">
+
+            <!-- Add Meshy API Key Input -->
+            <label for="meshyApiKey">Meshy API Key:</label>
+            <input type="password" id="meshyApiKey" placeholder="Enter your Meshy API key">
         </div>
     </div>
 
@@ -130,13 +138,19 @@
                         <option value="">Select output type...</option>
                         <option value="text">Text</option>
                         <option value="image">Image</option>
+                        <option value="meshy">Meshy - Mesh generated 3D</option>
+                        <option value="zoocad">Zoo - CAD model</option>
                     </select>
 
                     <div class="output-controls">
                         <button id="generateOutput" class="hidden">Generate</button>
                         <textarea id="outputBox" readonly class="hidden"></textarea>
                         <img id="outputImage" class="hidden">
-                        <button id="downloadImage" class="hidden">Download Image</button> <!-- New Download Button -->
+                        <button id="downloadImage" class="hidden">Download Image</button>
+                        <!-- Add a placeholder for 3D model output -->
+                        <div id="output3D" class="hidden">
+                            <iframe id="output3DViewer" width="100%" height="400px" style="border: none;"></iframe>
+                            <button id="download3D" class="hidden">Download 3D Model</button>
                     </div>
                 </div>
 

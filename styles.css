@@ -275,3 +275,52 @@
   border-radius: 8px; /* Optional: rounded edges */
   box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: adds a subtle shadow */
 }
+
+
+/* 3D Output Section */
+#output3D {
+  margin-top: 20px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+#output3DViewer {
+  margin-top: 10px;
+}
+
+#download3D {
+  background-color: #28a745; /* Green color */
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin-top: 10px;
+}
+
+#download3D:hover {
+  background-color: #218838; /* Darker green */
+}
+
+/* API Settings Section */
+.api-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.api-section label {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.api-section input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
