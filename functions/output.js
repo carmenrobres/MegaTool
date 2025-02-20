@@ -160,37 +160,49 @@ async function generateOutput() {
             outputBox.value = "Error generating 3D model.";
         }
     } else if (outputType === "zoocad") {
-        // Generate CAD model using ZooCAD API
         try {
-            const response = await fetch("https://api.zoocad.com/generate", {
+            console.log("Sending request to local backend (KittyCAD proxy)...");
+    
+            const response = await fetch("http://localhost:5000/api/text-to-cad", {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${zoocadApiKey}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     prompt: inputText,
-                    format: "cad"
+                    apiKey: zoocadApiKey
                 })
             });
-
+    
+            if (!response.ok) {
+                throw new Error(`HTTP Error! Status: ${response.status}`);
+            }
+    
             const result = await response.json();
-            if (result.file_url) {
-                output3DViewer.src = result.file_url;
-                output3D.classList.remove("hidden");
-                outputBox.classList.add("hidden");
-                outputImage.classList.add("hidden");
-                download3DButton.classList.remove("hidden");
-                download3DButton.setAttribute("data-model-url", result.file_url);
+            console.log("KittyCAD Response via Proxy:", result);
+    
+            if (result.id) {
+                const modelUrl = await pollKittyCadStatus(result.id, zoocadApiKey);
+                if (modelUrl) {
+                    output3DViewer.src = modelUrl;
+                    output3D.classList.remove("hidden");
+                    download3DButton.classList.remove("hidden");
+                    download3DButton.setAttribute("data-model-url", modelUrl);
+                } else {
+                    outputBox.value = "Error: Failed to generate CAD model.";
+                }
             } else {
-                outputBox.value = "Error: No valid response from ZooCAD API.";
+                outputBox.value = "Error: No valid response from KittyCAD.";
             }
         } catch (error) {
-            console.error("Error generating CAD model with ZooCAD:", error);
-            outputBox.value = "Error generating CAD model.";
+            console.error("Error contacting backend proxy:", error);
+            alert("Error connecting to the local backend. Make sure the server is running.");
         }
     }
-}
+    
+    }
+    
+
 
 // Function to poll Meshy task status
 async function pollMeshyTaskStatus(taskId, meshyApiKey) {
@@ -222,6 +234,14 @@ async function pollMeshyTaskStatus(taskId, meshyApiKey) {
 }
 
 // Function to download the generated 3D model
+// Function to generate a timestamped filename
+function generateFilename(type) {
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 10); // Format: YYYY-MM-DD
+    return `${dateStr}_${type}.obj`; // Save as OBJ format
+}
+
+// Function to download the generated 3D model
 function downloadGenerated3DModel() {
     const downloadButton = document.getElementById("download3D");
     const modelUrl = downloadButton.getAttribute("data-model-url");
@@ -231,15 +251,21 @@ function downloadGenerated3DModel() {
         return;
     }
 
+    // Determine if it's a Mesh or CAD file based on output type
+    const outputType = document.getElementById("outputType").value;
+    const fileType = outputType === "meshy" ? "Mesh" : "CAD";
+    const filename = generateFilename(fileType);
+
+    // Create and trigger the download
     const link = document.createElement("a");
     link.href = modelUrl;
-    link.download = "generated_model.glb"; // Default to GLB format
+    link.download = filename; // Save as .obj
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
 
-// Add event listener for the 3D model download button
+// Attach event listener to download button
 document.getElementById("download3D")?.addEventListener("click", downloadGenerated3DModel);
 
 // Function to download the generated image
