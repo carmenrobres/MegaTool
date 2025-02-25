@@ -38,7 +38,19 @@ async function generateOutput() {
     const apiKey = document.getElementById("apiKey").value;
     const zoocadApiKey = document.getElementById("zoocadApiKey").value;
     const meshyApiKey = document.getElementById("meshyApiKey").value;
-    const inputText = localStorage.getItem("finalPrompt") || ""; // Load selected input
+    const inputText = localStorage.getItem("finalPrompt")?.trim() || "";
+
+    if (!apiKey) {
+        alert("Please enter your OpenAI API Key.");
+        return;
+    }
+
+    if (!inputText) {
+        alert("❌ Please provide input text before generating output.");
+        return;
+    }
+
+    console.log("🚀 Using Input for Output Generation:", inputText);
     const outputType = document.getElementById("outputType").value;
     const outputBox = document.getElementById("outputBox");
     const outputImage = document.getElementById("outputImage");

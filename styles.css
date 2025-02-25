@@ -126,6 +126,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-bottom: 20px;
   }
   
   /* Add to existing CSS */
@@ -354,3 +355,16 @@
 .final-selection input {
   margin-right: 5px;
 }
+
+.loading-message {
+  color: #007BFF;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.hidden {
+  display: none !important;
+}
+

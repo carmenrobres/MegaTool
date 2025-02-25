@@ -269,6 +269,53 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
     window.addEventListener('beforeunload', stopAllMedia);
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    function updateFinalInput() {
+        let inputType = document.getElementById("inputType").value;
+        let finalInput = "";
+
+        if (inputType === "text") {
+            const selectedOption = document.querySelector('input[name="finalInputText"]:checked')?.value || "original";
+            const userText = document.getElementById("userText")?.value.trim() || "";
+            const refinedText = document.getElementById("refinedOutput")?.value.trim() || "";
+
+            finalInput = selectedOption === "refined" && refinedText ? refinedText : userText;
+        } else if (inputType === "audio") {
+            const selectedOption = document.querySelector('input[name="finalInputAudio"]:checked')?.value || "original";
+            const userTranscription = document.getElementById("transcription")?.value.trim() || "";
+            const refinedAudio = document.getElementById("refinedOutputAudio")?.value.trim() || "";
+
+            finalInput = selectedOption === "refined" && refinedAudio ? refinedAudio : userTranscription;
+        }
+
+        if (finalInput) {
+            localStorage.setItem("finalPrompt", finalInput);
+            console.log("✅ Final Input Updated:", finalInput);
+        }
+    }
+
+    // Attach event listeners to selection inputs (ensure they update the input immediately)
+    document.querySelectorAll('input[name="finalInputText"]').forEach(input => {
+        input.addEventListener("change", updateFinalInput);
+    });
+
+    document.querySelectorAll('input[name="finalInputAudio"]').forEach(input => {
+        input.addEventListener("change", updateFinalInput);
+    });
+
+    // Auto-save input as user types
+    document.getElementById("userText")?.addEventListener("input", updateFinalInput);
+    document.getElementById("transcription")?.addEventListener("input", updateFinalInput);
+
+    // **✅ Ensure input updates when switching input types**
+    document.getElementById("inputType")?.addEventListener("change", function () {
+        updateFinalInput(); // Update immediately when switching input type
+    });
+});
+
+
+
+
 // Refinement Functionality
 document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("refineButton")?.addEventListener("click", function() {
@@ -280,33 +327,8 @@ document.addEventListener('DOMContentLoaded', function () {
             refinePrompt();
             document.getElementById("finalSelectionAudio").classList.remove("hidden");
         });
-    
-        // Handle Send Input Button Click
-        document.getElementById("sendInput")?.addEventListener("click", function () {
-            let inputType = document.getElementById("inputType").value;
-    
-            let finalInput = "";
-            if (inputType === "text") {
-                const selectedOption = document.querySelector('input[name="finalInputText"]:checked').value;
-                finalInput = selectedOption === "refined"
-                    ? document.getElementById("refinedOutput").value
-                    : document.getElementById("userText").value;
-            } else if (inputType === "audio") {
-                const selectedOption = document.querySelector('input[name="finalInputAudio"]:checked').value;
-                finalInput = selectedOption === "refined"
-                    ? document.getElementById("refinedOutputAudio").value
-                    : document.getElementById("transcription").value;
-            }
-    
-            if (!finalInput.trim()) {
-                alert("Input cannot be empty.");
-                return;
-            }
-    
-            console.log("Final Input Sent:", finalInput);
-            localStorage.setItem("finalPrompt", finalInput); // Store for output.js
-            //alert("Input Sent Successfully!");
-        });
+
+        
     
     // Show refinement section when text or audio input is active
     document.getElementById("inputType")?.addEventListener("change", function () {
