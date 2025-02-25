@@ -211,16 +211,16 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
     // Send Audio to OpenAI
     async function sendToOpenAI(audioBlob) {
         const apiKey = document.getElementById("apiKey").value;
-
+    
         if (!apiKey) {
             alert("Please enter your OpenAI API Key.");
             return;
         }
-
+    
         const formData = new FormData();
         formData.append("file", audioBlob, "audio.wav");
         formData.append("model", "whisper-1");
-
+    
         try {
             const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
                 method: "POST",
@@ -229,22 +229,27 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
                 },
                 body: formData
             });
-
+    
             const result = await response.json();
             if (result.text) {
                 const transcriptionBox = document.getElementById("transcription");
                 transcriptionBox.value = result.text;
                 transcriptionBox.readOnly = false; // Make it editable
+    
+                // **Auto-save transcription to localStorage**
+                localStorage.setItem("finalPrompt", result.text);
+                console.log("✅ Transcription Auto-Saved:", result.text);
             } else {
                 console.error("Error in transcription:", result);
                 alert("Failed to transcribe the audio.");
             }
-            
+    
         } catch (error) {
             console.error("Error sending audio:", error);
             alert("An error occurred while processing the audio.");
         }
     }
+    
 
     // Stop All Media (Webcam & Audio)
     function stopAllMedia() {
@@ -269,49 +274,44 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
     window.addEventListener('beforeunload', stopAllMedia);
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    function updateFinalInput() {
-        let inputType = document.getElementById("inputType").value;
-        let finalInput = "";
+function updateFinalInput() {
+    let inputType = document.getElementById("inputType").value;
+    let finalInput = "";
 
-        if (inputType === "text") {
-            const selectedOption = document.querySelector('input[name="finalInputText"]:checked')?.value || "original";
-            const userText = document.getElementById("userText")?.value.trim() || "";
-            const refinedText = document.getElementById("refinedOutput")?.value.trim() || "";
+    if (inputType === "text") {
+        const selectedOption = document.querySelector('input[name="finalInputText"]:checked')?.value || "original";
+        const userText = document.getElementById("userText")?.value.trim() || "";
+        const refinedText = document.getElementById("refinedOutput")?.value.trim() || "";
 
-            finalInput = selectedOption === "refined" && refinedText ? refinedText : userText;
-        } else if (inputType === "audio") {
-            const selectedOption = document.querySelector('input[name="finalInputAudio"]:checked')?.value || "original";
-            const userTranscription = document.getElementById("transcription")?.value.trim() || "";
-            const refinedAudio = document.getElementById("refinedOutputAudio")?.value.trim() || "";
+        finalInput = selectedOption === "refined" && refinedText ? refinedText : userText;
+    } else if (inputType === "audio") {
+        const selectedOption = document.querySelector('input[name="finalInputAudio"]:checked')?.value || "original";
+        const userTranscription = document.getElementById("transcription")?.value.trim() || "";
+        const refinedAudio = document.getElementById("refinedOutputAudio")?.value.trim() || "";
 
-            finalInput = selectedOption === "refined" && refinedAudio ? refinedAudio : userTranscription;
-        }
-
-        if (finalInput) {
-            localStorage.setItem("finalPrompt", finalInput);
-            console.log("✅ Final Input Updated:", finalInput);
-        }
+        // **Ensure the refined prompt is saved when selected**
+        finalInput = selectedOption === "refined" && refinedAudio ? refinedAudio : userTranscription;
     }
 
-    // Attach event listeners to selection inputs (ensure they update the input immediately)
-    document.querySelectorAll('input[name="finalInputText"]').forEach(input => {
-        input.addEventListener("change", updateFinalInput);
-    });
+    if (finalInput) {
+        localStorage.setItem("finalPrompt", finalInput);
+        console.log("✅ Final Input Updated:", finalInput);
+    }
+}
 
-    document.querySelectorAll('input[name="finalInputAudio"]').forEach(input => {
-        input.addEventListener("change", updateFinalInput);
-    });
-
-    // Auto-save input as user types
-    document.getElementById("userText")?.addEventListener("input", updateFinalInput);
-    document.getElementById("transcription")?.addEventListener("input", updateFinalInput);
-
-    // **✅ Ensure input updates when switching input types**
-    document.getElementById("inputType")?.addEventListener("change", function () {
-        updateFinalInput(); // Update immediately when switching input type
-    });
+// Attach event listeners to selection inputs
+document.querySelectorAll('input[name="finalInputText"]').forEach(input => {
+    input.addEventListener("change", updateFinalInput);
 });
+
+document.querySelectorAll('input[name="finalInputAudio"]').forEach(input => {
+    input.addEventListener("change", updateFinalInput);
+});
+
+// **Ensure refined voice prompt updates when user types**
+document.getElementById("transcription")?.addEventListener("input", updateFinalInput);
+document.getElementById("refinedOutputAudio")?.addEventListener("input", updateFinalInput);
+
 
 
 
