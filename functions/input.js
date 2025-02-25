@@ -289,7 +289,6 @@ function updateFinalInput() {
         const userTranscription = document.getElementById("transcription")?.value.trim() || "";
         const refinedAudio = document.getElementById("refinedOutputAudio")?.value.trim() || "";
 
-        // **Ensure the refined prompt is saved when selected**
         finalInput = selectedOption === "refined" && refinedAudio ? refinedAudio : userTranscription;
     }
 
@@ -298,6 +297,19 @@ function updateFinalInput() {
         console.log("✅ Final Input Updated:", finalInput);
     }
 }
+
+// ✅ Attach event listeners to ensure the input is saved instantly
+document.querySelectorAll('input[name="finalInputText"]').forEach(input => {
+    input.addEventListener("change", updateFinalInput);
+});
+
+document.querySelectorAll('input[name="finalInputAudio"]').forEach(input => {
+    input.addEventListener("change", updateFinalInput);
+});
+
+document.getElementById("userText")?.addEventListener("input", updateFinalInput);
+document.getElementById("transcription")?.addEventListener("input", updateFinalInput);
+
 
 // Attach event listeners to selection inputs
 document.querySelectorAll('input[name="finalInputText"]').forEach(input => {
