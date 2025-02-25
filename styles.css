@@ -378,3 +378,31 @@
 .hidden {
   display: none !important;
 }
+
+
+
+.loading-message {
+  color: #007BFF;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#imageDescription {
+  margin-top: 10px;
+  width: 100%;
+  height: 150px;
+  resize: none;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.select-control {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
