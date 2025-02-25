@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const inputType = this.value;
         const refinementSection = document.getElementById("refinementSection");
         const refinementSectionAudio = document.getElementById("refinementSectionAudio");
-
+    
         if (inputType === "text") {
             refinementSection.classList.remove("hidden");
             refinementSectionAudio.classList.add("hidden");
@@ -347,16 +347,18 @@ document.addEventListener('DOMContentLoaded', function () {
             refinementSectionAudio.classList.add("hidden");
         }
     });
+    
 });
 
-// Refine Prompt Function
 async function refinePrompt() {
     const apiKey = document.getElementById("apiKey").value;
     const inputType = document.getElementById("inputType").value; // Get the selected input type
     const inputText = inputType === "text" 
         ? document.getElementById("userText")?.value.trim() 
         : document.getElementById("transcription")?.value.trim();
-    const refinementType = document.getElementById("refinementType")?.value || document.getElementById("refinementTypeAudio")?.value;
+    const refinementType = inputType === "text"
+        ? document.getElementById("refinementType")?.value 
+        : document.getElementById("refinementTypeAudio")?.value;
 
     // Get output elements based on input type
     const suitabilityOutput = inputType === "text" 
@@ -368,6 +370,17 @@ async function refinePrompt() {
     const refinedOutput = inputType === "text" 
         ? document.getElementById("refinedOutput") 
         : document.getElementById("refinedOutputAudio");
+
+    // **Loading Message**
+    const loadingMessage = inputType === "text" 
+    ? document.getElementById("loadingRefinement")  // ✅ FIXED ID
+    : document.getElementById("loadingRefinementAudio");
+    // ✅ Check if element exists before using classList
+    if (loadingMessage) {
+        loadingMessage.classList.remove("hidden");
+    } else {
+        console.error("❌ Loading message element not found for", inputType);
+    }
 
     if (!apiKey) {
         alert("Please enter your OpenAI API Key.");
@@ -384,11 +397,14 @@ async function refinePrompt() {
         return;
     }
 
+    // **Show loading message before making API call**
+    loadingMessage.classList.remove("hidden");
+
     // Define structured prompt for API call
     let refinementPrompt = "";
     switch (refinementType) {
         case "3d_cad":
-            refinementPrompt = `Analyze the following description and determine if CAD is the best format for creating this object. If it is, explain why. If not, explain why another format (e.g., 3D Mesh) might be better.  
+            refinementPrompt = `Analyze the following description and determine if CAD is the best format for creating this object. If it is, explain why. If not, explain why another format (e.g., 3D Mesh) might be better.
 
             Then, refine the input into a structured CAD modeling prompt using the following best practices:
             - The object must be described in terms of **geometric shapes** (e.g., cylinders, cubes, spheres).
@@ -407,15 +423,15 @@ async function refinePrompt() {
             ---`;
             break;
 
-
         case "3d_mesh":
-            refinementPrompt = `Analyze the following description and determine if a 3D Mesh is the best format for creating this object. If it is, explain why. If not, explain why another format (e.g., CAD) might be better.  
+            refinementPrompt = `Analyze the following description and determine if a 3D Mesh is the best format for creating this object. If it is, explain why. If not, explain why another format (e.g., CAD) might be better.
 
-            Then, refine the input into a structured 3D Mesh modeling prompt based on the best possible representation.  
+            Then, refine the input into a structured 3D Mesh modeling prompt based on the best possible representation.
 
-            Input: "${inputText}"
+            **Input:**  
+            "${inputText}"
 
-            Respond with this exact format:
+            **Respond with this exact format:**
             ---
             Suitability: [Mesh is/is not the best format because ...]
             Refined Prompt: "[Improved Mesh modeling prompt]"
@@ -423,23 +439,23 @@ async function refinePrompt() {
             break;
 
         case "image_generation":
-            refinementPrompt = `Refine the following text into a structured and detailed prompt for AI image generation.  
-        
+            refinementPrompt = `Refine the following text into a structured and detailed prompt for AI image generation.
+
             Ensure the refined prompt:
             - Clearly describes the **subject** and **composition**.
             - Specifies **lighting, colors, and atmosphere**.
             - Defines **style or artistic approach** (e.g., photorealistic, cyberpunk, watercolor).
             - Avoids vague concepts like "beautiful" or "amazing"—instead, describe specific details.
-        
+
             **Input:**  
             "${inputText}"
-        
+
             **Respond with this exact format:**
             ---
             Refined Prompt: "[Detailed Image Generation prompt]"
             ---`;
             break;
-            
+
         default:
             alert("Invalid refinement type.");
             return;
@@ -482,7 +498,7 @@ async function refinePrompt() {
                 suitabilityText.textContent = suitability;
                 suitabilityOutput.classList.remove("hidden");
             } else {
-                // If there's no suitability, just hide that section
+                // If there's no suitability message, hide the section
                 suitabilityOutput.classList.add("hidden");
             }
         } else {
@@ -493,8 +509,15 @@ async function refinePrompt() {
     } catch (error) {
         console.error("Error refining prompt:", error);
         alert("Network error! Please check your internet connection and API key.");
+    } finally {
+        // **Hide loading message after response**
+        loadingMessage.classList.add("hidden");
     }
 }
+
+
+
+
 
 document.getElementById("saveApiKeys").addEventListener("click", function () {
     localStorage.setItem("apiKey", document.getElementById("apiKey").value);

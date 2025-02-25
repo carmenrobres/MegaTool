@@ -96,13 +96,16 @@
                                     <option value="image_generation">Image Generation</option>
                                 </select>
                                 <button id="refineButton">Refine</button>
+                                <!-- Loading Message for Refinement -->
+                                <p id="loadingRefinement" class="loading-message hidden">Refining prompt, please wait...</p>
+
+
                             </div>
                             <!-- Suitability Output (non-editable) -->
                             <div id="suitabilityOutput" class="hidden">
                                 <h3>Suitability:</h3>
                                 <p id="suitabilityText"></p> <!-- Non-editable text -->
                             </div>
-                            <!-- Refined Prompt Output (editable) -->
                             <textarea id="refinedOutput" placeholder="Refined prompt will appear here..." readonly></textarea>
                         </div>
 
@@ -112,6 +115,7 @@
                             <button id="recordButton">Start Recording</button>
                             <textarea id="transcription" class="hidden"></textarea>
                             <!-- Add Refinement Section -->
+                            <!-- Refinement Section for Audio -->
                             <div id="refinementSectionAudio" class="hidden">
                                 <label for="refinementTypeAudio">Refine for:</label>
                                 <select id="refinementTypeAudio">
@@ -121,14 +125,19 @@
                                     <option value="image_generation">Image Generation</option>
                                 </select>
                                 <button id="refineButtonAudio">Refine</button>
+                                <!-- Loading Message for Refinement -->
+                                <p id="loadingRefinementAudio" class="loading-message hidden">Refining prompt, please wait...</p>
+
                             </div>
+
                             <!-- Suitability Output (non-editable) -->
                             <div id="suitabilityOutputAudio" class="hidden">
                                 <h3>Suitability:</h3>
                                 <p id="suitabilityTextAudio"></p> <!-- Non-editable text -->
                             </div>
-                            <!-- Refined Prompt Output (editable) -->
-                            <textarea id="refinedOutputAudio" placeholder="Refined prompt will appear here..." readonly></textarea>
+                            <!-- Refined Prompt Output for Audio (editable) -->
+                            <textarea id="refinedOutputAudio" class="hidden" placeholder="Refined prompt will appear here..." readonly></textarea>
+
                         </div>
 
                         <!-- Final Selection for Text Input -->
