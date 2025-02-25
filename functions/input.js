@@ -8,25 +8,65 @@ document.addEventListener('DOMContentLoaded', function () {
     function handleInputChange() {
         stopAllMedia();
         hideAllSections();
-
+    
         const selectedInput = document.getElementById("inputType").value;
         if (!selectedInput) return;
-
+    
+        // Show the correct input section
         const section = document.getElementById(selectedInput + "Input");
         section.classList.remove("hidden");
-
+    
         // Show output type selector when input is selected
         const outputTypeSelect = document.getElementById("outputType");
         outputTypeSelect.classList.toggle("hidden", !selectedInput);
-
+    
+        // Hide selection boxes when switching input
+        document.getElementById("finalSelectionText").classList.add("hidden");
+        document.getElementById("finalSelectionAudio").classList.add("hidden");
+    
         if (selectedInput === "webcam") {
             initWebcam();
         } else if (selectedInput === "audio") {
             initAudio();
         }
     }
+    
 
-    // Text Input (Handled automatically via textarea)
+    function clearInputFields(selectedInput) {
+        // Clear text input
+        if (selectedInput !== "text") {
+            const userText = document.getElementById("userText");
+            if (userText) userText.value = "";
+        }
+    
+        // Clear image input
+        if (selectedInput !== "image") {
+            const imageUpload = document.getElementById("imageUpload");
+            const imagePreview = document.getElementById("imagePreview");
+            if (imageUpload) imageUpload.value = "";
+            if (imagePreview) {
+                imagePreview.src = "";
+                imagePreview.classList.add("hidden");
+            }
+        }
+    
+        // Clear webcam input
+        if (selectedInput !== "webcam") {
+            const capturedImage = document.getElementById("capturedImage");
+            if (capturedImage) {
+                capturedImage.src = "";
+                capturedImage.classList.add("hidden");
+            }
+            const downloadCapturedImage = document.getElementById("downloadCapturedImage");
+            if (downloadCapturedImage) downloadCapturedImage.classList.add("hidden");
+        }
+    
+        // Clear audio input
+        if (selectedInput !== "audio") {
+            const transcription = document.getElementById("transcription");
+            if (transcription) transcription.value = "";
+        }
+    }
 
     // Image Upload
     document.getElementById("imageUpload")?.addEventListener("change", function (event) {
@@ -167,7 +207,7 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
         }
     }
     
-
+    
     // Send Audio to OpenAI
     async function sendToOpenAI(audioBlob) {
         const apiKey = document.getElementById("apiKey").value;
@@ -231,9 +271,42 @@ document.getElementById("captureButton")?.addEventListener("click", function () 
 
 // Refinement Functionality
 document.addEventListener('DOMContentLoaded', function () {
-    // Add event listeners for refinement buttons
-    document.getElementById("refineButton")?.addEventListener("click", refinePrompt);
-    document.getElementById("refineButtonAudio")?.addEventListener("click", refinePrompt);
+        document.getElementById("refineButton")?.addEventListener("click", function() {
+            refinePrompt();
+            document.getElementById("finalSelectionText").classList.remove("hidden");
+        });
+    
+        document.getElementById("refineButtonAudio")?.addEventListener("click", function() {
+            refinePrompt();
+            document.getElementById("finalSelectionAudio").classList.remove("hidden");
+        });
+    
+        // Handle Send Input Button Click
+        document.getElementById("sendInput")?.addEventListener("click", function () {
+            let inputType = document.getElementById("inputType").value;
+    
+            let finalInput = "";
+            if (inputType === "text") {
+                const selectedOption = document.querySelector('input[name="finalInputText"]:checked').value;
+                finalInput = selectedOption === "refined"
+                    ? document.getElementById("refinedOutput").value
+                    : document.getElementById("userText").value;
+            } else if (inputType === "audio") {
+                const selectedOption = document.querySelector('input[name="finalInputAudio"]:checked').value;
+                finalInput = selectedOption === "refined"
+                    ? document.getElementById("refinedOutputAudio").value
+                    : document.getElementById("transcription").value;
+            }
+    
+            if (!finalInput.trim()) {
+                alert("Input cannot be empty.");
+                return;
+            }
+    
+            console.log("Final Input Sent:", finalInput);
+            localStorage.setItem("finalPrompt", finalInput); // Store for output.js
+            //alert("Input Sent Successfully!");
+        });
     
     // Show refinement section when text or audio input is active
     document.getElementById("inputType")?.addEventListener("change", function () {
@@ -400,3 +473,37 @@ async function refinePrompt() {
         alert("Network error! Please check your internet connection and API key.");
     }
 }
+
+document.getElementById("saveApiKeys").addEventListener("click", function () {
+    localStorage.setItem("apiKey", document.getElementById("apiKey").value);
+    localStorage.setItem("zoocadApiKey", document.getElementById("zoocadApiKey").value);
+    localStorage.setItem("meshyApiKey", document.getElementById("meshyApiKey").value);
+    alert("API Keys Saved!");
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const apiKeyInput = document.getElementById("apiKey");
+    const zoocadApiKeyInput = document.getElementById("zoocadApiKey");
+    const meshyApiKeyInput = document.getElementById("meshyApiKey");
+
+    // Load saved API keys from localStorage
+    function loadApiKeys() {
+        if (localStorage.getItem("apiKey")) apiKeyInput.value = localStorage.getItem("apiKey");
+        if (localStorage.getItem("zoocadApiKey")) zoocadApiKeyInput.value = localStorage.getItem("zoocadApiKey");
+        if (localStorage.getItem("meshyApiKey")) meshyApiKeyInput.value = localStorage.getItem("meshyApiKey");
+    }
+
+    // Save API keys when changed
+    function saveApiKey(event) {
+        localStorage.setItem(event.target.id, event.target.value);
+    }
+
+    // Attach event listeners to save on change
+    apiKeyInput.addEventListener("input", saveApiKey);
+    zoocadApiKeyInput.addEventListener("input", saveApiKey);
+    meshyApiKeyInput.addEventListener("input", saveApiKey);
+
+    // Load stored API keys when the page loads
+    loadApiKeys();
+});

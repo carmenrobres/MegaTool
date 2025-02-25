@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("downloadImage")?.addEventListener("click", downloadGeneratedImage);
 });
 
+
 function handleOutputTypeChange() {
     const outputType = document.getElementById("outputType").value;
     const generateButton = document.getElementById("generateOutput");
@@ -20,6 +21,16 @@ function handleOutputTypeChange() {
     document.getElementById("outputBox").classList.add("hidden");
     document.getElementById("outputImage").classList.add("hidden");
     document.getElementById("downloadImage").classList.add("hidden");
+    document.getElementById("output3D").classList.add("hidden");
+    document.getElementById("download3D").classList.add("hidden");
+
+    // Clear output fields
+    const outputBox = document.getElementById("outputBox");
+    if (outputBox) outputBox.value = "";
+    const outputImage = document.getElementById("outputImage");
+    if (outputImage) outputImage.src = "";
+    const output3DViewer = document.getElementById("output3DViewer");
+    if (output3DViewer) output3DViewer.src = "";
 }
 
 // Fixing Output Generation to support Text and Image
@@ -27,8 +38,7 @@ async function generateOutput() {
     const apiKey = document.getElementById("apiKey").value;
     const zoocadApiKey = document.getElementById("zoocadApiKey").value;
     const meshyApiKey = document.getElementById("meshyApiKey").value;
-
-    const inputText = document.getElementById("userText")?.value.trim() || document.getElementById("transcription")?.value.trim();
+    const inputText = localStorage.getItem("finalPrompt") || ""; // Load selected input
     const outputType = document.getElementById("outputType").value;
     const outputBox = document.getElementById("outputBox");
     const outputImage = document.getElementById("outputImage");

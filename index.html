@@ -33,6 +33,8 @@
             <!-- Add Meshy API Key Input -->
             <label for="meshyApiKey">Meshy API Key:</label>
             <input type="password" id="meshyApiKey" placeholder="Enter your Meshy API key">
+
+            <button id="saveApiKeys">Save API Keys</button> <!-- NEW BUTTON -->
         </div>
     </div>
 
@@ -128,6 +130,32 @@
                             <!-- Refined Prompt Output (editable) -->
                             <textarea id="refinedOutputAudio" placeholder="Refined prompt will appear here..." readonly></textarea>
                         </div>
+
+                        <!-- Final Selection for Text Input -->
+                        <div id="finalSelectionText" class="final-selection hidden">
+                            <h3>Choose Input to Send:</h3>
+                            <label>
+                                <input type="radio" name="finalInputText" value="original"> My Prompt
+                            </label>
+                            <label>
+                                <input type="radio" name="finalInputText" value="refined" checked> Refined Prompt
+                            </label>
+                        </div>
+
+                        <!-- Final Selection for Audio Input -->
+                        <div id="finalSelectionAudio" class="final-selection hidden">
+                            <h3>Choose Input to Send:</h3>
+                            <label>
+                                <input type="radio" name="finalInputAudio" value="original"> My Transcription
+                            </label>
+                            <label>
+                                <input type="radio" name="finalInputAudio" value="refined" checked> Refined Prompt
+                            </label>
+                        </div>
+
+                        <!-- Send Button -->
+                        <button id="sendInput">Send Input</button>
+
                     </div>
                 </div>
                 
