@@ -19,9 +19,21 @@ let isViewerInitialized = false;
 function handleOutputTypeChange() {
     const outputType = document.getElementById("outputType").value;
     const generateButton = document.getElementById("generateOutput");
+    const goToZooCadButton = document.getElementById("goToZooCadButton");
 
-    // Show generate button only when output type is selected
-    generateButton.classList.toggle("hidden", !outputType);
+    // Show generate button only when output type is selected (and NOT zoocad)
+    if (outputType && outputType !== "zoocad") {
+        generateButton.classList.remove("hidden");
+        goToZooCadButton.classList.add("hidden");
+    } else if (outputType === "zoocad") {
+        // Show Zoo button and hide generate button for zoocad option
+        goToZooCadButton.classList.remove("hidden");
+        generateButton.classList.add("hidden");
+    } else {
+        // Hide both buttons if no output type is selected
+        generateButton.classList.add("hidden");
+        goToZooCadButton.classList.add("hidden");
+    }
 
     // Hide all output elements
     document.getElementById("outputBox").classList.add("hidden");
@@ -388,8 +400,41 @@ async function generateOutput() {
                 output3D.classList.add("hidden");
             }
         } else if (outputType === "zoocad") {
-            // Your existing zoocad code here
-        }
+            if (!zoocadApiKey) {
+                alert("Please enter your ZooCAD API Key.");
+                return;
+            }
+    
+            try {
+                console.log("Sending request to backend proxy for ZooCAD...");
+    
+                const response = await fetch("http://localhost:5000/api/text-to-cad", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        prompt: inputText,
+                        apiKey: zoocadApiKey
+                    })
+                });
+    
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+    
+                const result = await response.json();
+                console.log("ZooCAD Response:", result);
+    
+                if (result.model_url) {
+                    output3DViewer.src = result.model_url;
+                    output3DViewer.classList.remove("hidden");
+                } else {
+                    alert("Error: No valid 3D model received from ZooCAD.");
+                }
+            } catch (error) {
+                console.error("Error contacting backend proxy:", error);
+                alert("Error connecting to the backend. Make sure the server is running.");
+            }
+        }   
     } catch (error) {
         console.error("Error generating output:", error);
         outputBox.value = "Error generating output.";
@@ -682,3 +727,8 @@ async function generateMeshyFrom3DImage(base64Image, meshyApiKey) {
         loadingMessage.classList.add("hidden");
     }
 }
+
+// Add this to your DOMContentLoaded event listener
+document.getElementById("goToZooCadButton")?.addEventListener("click", function() {
+    window.open("https://text-to-cad.zoo.dev/", "_blank");
+});

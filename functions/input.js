@@ -530,7 +530,6 @@ async function refinePrompt() {
 
 document.getElementById("saveApiKeys").addEventListener("click", function () {
     localStorage.setItem("apiKey", document.getElementById("apiKey").value);
-    localStorage.setItem("zoocadApiKey", document.getElementById("zoocadApiKey").value);
     localStorage.setItem("meshyApiKey", document.getElementById("meshyApiKey").value);
     alert("API Keys Saved!");
 });
@@ -555,7 +554,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Attach event listeners to save on change
     apiKeyInput.addEventListener("input", saveApiKey);
-    zoocadApiKeyInput.addEventListener("input", saveApiKey);
     meshyApiKeyInput.addEventListener("input", saveApiKey);
 
     // Load stored API keys when the page loads

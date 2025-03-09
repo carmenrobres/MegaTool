@@ -632,3 +632,104 @@ h3 {
   border-radius: 6px;
   text-align: center;
 }
+
+
+/* Make page two-column layout */
+.two-column-make {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: auto;
+}
+
+.make-column {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.model-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.analysis-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas-container {
+  width: 100%;
+  height: 350px;
+  background-color: #222;
+  border-radius: 6px;
+  margin: 15px 0;
+  overflow: hidden;
+}
+
+#objCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.primary-button {
+  background: #007BFF;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.2s;
+}
+
+.primary-button:hover {
+  background: #0056b3;
+}
+
+.help-text {
+  color: #666;
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+#printInstructions {
+  flex-grow: 1;
+  min-height: 300px;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none;
+}
+
+#loading3DPrint {
+  color: #007BFF;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 123, 255, 0.1);
+  border-radius: 6px;
+  animation: pulse 1.5s infinite;
+}
+
+/* Remove original make container styles that conflict */
+.make-container {
+  max-width: 100%;
+  margin: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+}

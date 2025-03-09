@@ -27,10 +27,6 @@
             <label for="apiKey">OpenAI API Key:</label>
             <input type="password" id="apiKey" placeholder="Enter your OpenAI API key">
 
-            <!-- Add ZooCAD API Key Input -->
-            <label for="zoocadApiKey">ZooCAD API Key:</label>
-            <input type="password" id="zoocadApiKey" placeholder="Enter your ZooCAD API key">
-
             <!-- Add Meshy API Key Input -->
             <label for="meshyApiKey">Meshy API Key:</label>
             <input type="password" id="meshyApiKey" placeholder="Enter your Meshy API key">
@@ -53,19 +49,26 @@
         <!-- Make -->
         <div id="make" class="page">
             <h2>Prepare for 3D Printing</h2>
-    
-            <div class="make-container">
-                <label for="objUpload">Upload OBJ File:</label>
-                <input type="file" id="objUpload" accept=".obj">
-                <canvas id="objCanvas"></canvas>
-                <button onclick="captureModelScreenshot()">Analyze Model</button>
-
+            
+            <div class="make-container two-column-make">
+                <!-- Left Column - 3D Model Viewer -->
+                <div class="make-column model-column">
+                    <h3>3D Model</h3>
+                    <label for="objUpload">Upload OBJ File:</label>
+                    <input type="file" id="objUpload" accept=".obj">
+                    <div class="canvas-container">
+                        <canvas id="objCanvas"></canvas>
+                    </div>
+                    <button id="analyze3DPrint" class="primary-button">Analyze for 3D Printing</button>
+                </div>
                 
-                <button id="analyze3DPrint">How to 3D Print?</button>
-                
-                <p id="loading3DPrint" class="loading-message hidden">Analyzing your file, please wait...</p>
-                
-                <textarea id="printInstructions" class="hidden" placeholder="Preparation steps will appear here..." readonly></textarea>
+                <!-- Right Column - Analysis Results -->
+                <div class="make-column analysis-column">
+                    <h3>Print Recommendations</h3>
+                    <p class="help-text">Upload an OBJ file and click "Analyze" to get detailed 3D printing recommendations.</p>
+                    <p id="loading3DPrint" class="loading-message hidden">Analyzing your file, please wait...</p>
+                    <textarea id="printInstructions" class="hidden" placeholder="Preparation steps will appear here..." readonly></textarea>
+                </div>
             </div>
         </div>
 
@@ -244,6 +247,7 @@
 
                     <div class="output-controls">
                         <button id="generateOutput" class="hidden">Generate</button>
+                        <button id="goToZooCadButton" class="hidden">Go to ZooCAD</button>
                         <!-- Loading Message for Output -->
                         <p id="loadingOutput" class="loading-message hidden">Generating output, please wait...</p>
                         <textarea id="outputBox" readonly class="hidden"></textarea>
