@@ -733,3 +733,137 @@ h3 {
   background: transparent;
   padding: 0;
 }
+
+.loading-3d-print {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background-color: rgba(0, 123, 255, 0.1);
+  border-radius: 8px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 123, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #007BFF;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 15px;
+}
+
+.loading-steps {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0 0;
+  width: 100%;
+  text-align: left;
+}
+
+.loading-steps li {
+  padding: 8px 0;
+  margin: 5px 0;
+  border-left: 3px solid transparent;
+  padding-left: 15px;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.loading-steps li.active {
+  border-left-color: #007BFF;
+  color: #007BFF;
+  font-weight: bold;
+}
+
+.loading-steps li.completed {
+  border-left-color: #28a745;
+  color: #28a745;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Make the hidden class more forceful */
+.hidden {
+  display: none !important;
+}
+
+/* Add this CSS to properly style the markdown output */
+.markdown-output {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  padding: 15px;
+  max-height: 600px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.markdown-output h2 {
+  font-size: 1.4em;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ddd;
+  color: #007BFF;
+}
+
+.markdown-output h3 {
+  font-size: 1.2em;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  color: #0056b3;
+}
+
+.markdown-output ul, .markdown-output ol {
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+
+.markdown-output li {
+  margin-bottom: 5px;
+}
+
+.markdown-output strong {
+  font-weight: 600;
+  color: #222;
+}
+
+.markdown-output code {
+  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  background-color: #f1f1f1;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.markdown-output p {
+  margin-bottom: 10px;
+}
+
+/* Custom scrollbar for the output */
+.markdown-output::-webkit-scrollbar {
+  width: 8px;
+}
+
+.markdown-output::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.markdown-output::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.markdown-output::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
