@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem("lastPage", pageId);
         }
     };
-
+    
     // Load initial page
     const savedPage = localStorage.getItem("lastPage") || "landing";
     navigateTo(savedPage);
@@ -37,4 +37,20 @@ document.addEventListener('DOMContentLoaded', function() {
 window.onload = function() {
     const savedPage = localStorage.getItem("lastPage") || "landing";
     navigateTo(savedPage);
+};
+
+window.onload = function() {
+    const savedPage = localStorage.getItem("lastPage") || "landing";
+    navigateTo(savedPage);
+};
+
+window.navigateTo = function(pageId) {
+    document.querySelectorAll(".page").forEach(page => {
+        page.style.display = 'none';
+    });
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.style.display = 'block';
+        localStorage.setItem("lastPage", pageId);
+    }
 };

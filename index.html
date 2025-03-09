@@ -49,6 +49,24 @@
                 <button onclick="navigateTo('make')">Make Something</button>
             </div>
         </div>
+        <!-- Make -->
+        <div id="make" class="page">
+            <h2>Prepare for 3D Printing</h2>
+    
+            <div class="make-container">
+                <label for="objUpload">Upload OBJ File:</label>
+                <input type="file" id="objUpload" accept=".obj">
+                <canvas id="objCanvas"></canvas>
+                <button onclick="captureModelScreenshot()">Analyze Model</button>
+
+                
+                <button id="analyze3DPrint">How to 3D Print?</button>
+                
+                <p id="loading3DPrint" class="loading-message hidden">Analyzing your file, please wait...</p>
+                
+                <textarea id="printInstructions" class="hidden" placeholder="Preparation steps will appear here..." readonly></textarea>
+            </div>
+        </div>
 
         <!-- Ideate -->
         <!-- Update Ideate page with proper controls -->
@@ -243,13 +261,7 @@
             </div>
         </div>
 
-        <!-- Make -->
-        <div id="make" class="page">
-            <div class="coming-soon">
-                <h2>Coming Soon</h2>
-                <p>We're working on something amazing!</p>
-            </div>
-        </div>
+        
     </main>
     <!-- THREE.js main library -->
 <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
@@ -262,6 +274,8 @@
 <script src="functions/navigation.js"></script>
 <script src="functions/input.js"></script>
 <script src="functions/output.js"></script>
+<script src="functions/make.js"></script>
+
     
 </body>
 </html>

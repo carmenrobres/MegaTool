@@ -565,3 +565,70 @@ canvas {
   width: 100%;
   height: 100%;
 }
+
+.make-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.make-container input, .make-container textarea, .make-container button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+#analyze3DPrint {
+  background: #007BFF;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#analyze3DPrint:hover {
+  background: #0056b3;
+}
+
+#loading3DPrint {
+  color: #007BFF;
+  font-weight: bold;
+  display: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#make {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 100px);
+}
+
+.output-section {
+  background: #fff;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+h3 {
+  margin-bottom: 10px;
+}
+
+.error-box {
+  background: #ffdddd;
+  color: #900;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+}
