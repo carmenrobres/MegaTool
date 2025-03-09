@@ -418,12 +418,7 @@ async function refinePrompt() {
             refinementPrompt = `Analyze the following description and determine if CAD is the best format for creating this object. If it is, explain why. If not, explain why another format (e.g., 3D Mesh) might be better.
 
             Then, refine the input into a structured CAD modeling prompt using the following best practices:
-            - The object must be described in terms of **geometric shapes** (e.g., cylinders, cubes, spheres).
-            - Be **explicit about dimensions** (e.g., "a plate with four 5mm holes evenly spaced").
-            - **Assemblies are difficult**, so the prompt should focus on a **single object** rather than multiple interconnected parts.
-            - **Shorter prompts** (1-2 sentences) succeed more often than longer ones.
-            - If key dimensions are missing, fill in reasonable estimates.
-
+            'Describe an object that can be modeled in CAD with simple operations, being as explicit as possible, using meassures if possible and focusing on single, self-contained items rather than assemblies. Try to make descriptions as operations in a cad software. Try not to build super long prompts.
             **Input:**  
             "${inputText}"
 
@@ -437,7 +432,10 @@ async function refinePrompt() {
         case "3d_mesh":
             refinementPrompt = `Analyze the following description and determine if a 3D Mesh is the best format for creating this object. If it is, explain why. If not, explain why another format (e.g., CAD) might be better.
 
-            Then, refine the input into a structured 3D Mesh modeling prompt based on the best possible representation.
+            Then, refine the input into a structured 3D Mesh modeling prompt based on the best possible representation. 
+            - **Tailor the style to its purpose** (e.g., low-poly for games, high-precision for manufacturing).
+            - **Keep prompts clear and concise** (1-2 sentences work best).
+            - **Indicate dimensions and proportions** using precise units (mm, cm, m).
 
             **Input:**  
             "${inputText}"
