@@ -1,3 +1,5 @@
+window.handleInputChange = handleInputChange;
+
 document.addEventListener('DOMContentLoaded', function () {
     let stream = null;
     let isRecording = false;
@@ -542,9 +544,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Load saved API keys from localStorage
     function loadApiKeys() {
-        if (localStorage.getItem("apiKey")) apiKeyInput.value = localStorage.getItem("apiKey");
-        if (localStorage.getItem("zoocadApiKey")) zoocadApiKeyInput.value = localStorage.getItem("zoocadApiKey");
-        if (localStorage.getItem("meshyApiKey")) meshyApiKeyInput.value = localStorage.getItem("meshyApiKey");
+        const apiKeyInput = document.getElementById("apiKey");
+        const zoocadApiKeyInput = document.getElementById("zoocadApiKey");
+        const meshyApiKeyInput = document.getElementById("meshyApiKey");
+    
+        // Only set values if the elements exist
+        if (apiKeyInput && localStorage.getItem("apiKey")) {
+            apiKeyInput.value = localStorage.getItem("apiKey");
+        }
+        
+        if (zoocadApiKeyInput && localStorage.getItem("zoocadApiKey")) {
+            zoocadApiKeyInput.value = localStorage.getItem("zoocadApiKey");
+        }
+        
+        if (meshyApiKeyInput && localStorage.getItem("meshyApiKey")) {
+            meshyApiKeyInput.value = localStorage.getItem("meshyApiKey");
+        }
     }
 
     // Save API keys when changed

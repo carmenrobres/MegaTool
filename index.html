@@ -31,7 +31,7 @@
             <label for="meshyApiKey">Meshy API Key:</label>
             <input type="password" id="meshyApiKey" placeholder="Enter your Meshy API key">
 
-            <button id="saveApiKeys">Save API Keys</button> <!-- NEW BUTTON -->
+            <button id="saveApiKeys">Save API Keys</button>
         </div>
     </div>
 
@@ -73,8 +73,6 @@
         </div>
 
         <!-- Ideate -->
-        <!-- Update Ideate page with proper controls -->
-        <!-- Update Ideate page structure -->
         <div id="ideate" class="page">
             <div class="two-column">
                 <!-- Input Column -->
@@ -95,7 +93,7 @@
                             <input type="file" id="imageUpload" accept="image/*">
                             <img id="imagePreview" class="hidden">
 
-                            <!-- NEW: Selection for description type -->
+                            <!-- Selection for description type -->
                             <select id="imageDescribeType">
                                 <option value="simple">Describe this image</option>
                                 <option value="3d_cad">Describe this image for CAD generation</option>
@@ -116,10 +114,7 @@
                                 <label><input type="radio" name="imageInputChoice" value="image" checked> Use image as input</label>
                                 <label><input type="radio" name="imageInputChoice" value="description"> Use description as input</label>
                             </div>
-
                         </div>
-
-
                         
                         <!-- Webcam Input -->
                         <div id="webcamInput" class="input-section hidden">
@@ -129,7 +124,7 @@
                             <img id="capturedImage" class="hidden">
                             <button id="downloadCapturedImage" class="hidden">Download Image</button>
 
-                            <!-- NEW: Selection for description type -->
+                            <!-- Selection for description type -->
                             <select id="webcamDescribeType">
                                 <option value="simple">Describe this image</option>
                                 <option value="3d_cad">Describe this image for CAD generation</option>
@@ -152,7 +147,6 @@
                             </div>
                         </div>
 
-                                                <!-- Text Input -->
                         <!-- Text Input -->
                         <div id="textInput" class="input-section hidden">
                             <textarea id="userText" placeholder="Enter your text here..."></textarea>
@@ -168,8 +162,6 @@
                                 <button id="refineButton">Refine</button>
                                 <!-- Loading Message for Refinement -->
                                 <p id="loadingRefinement" class="loading-message hidden">Refining prompt, please wait...</p>
-
-
                             </div>
                             <!-- Suitability Output (non-editable) -->
                             <div id="suitabilityOutput" class="hidden">
@@ -179,7 +171,6 @@
                             <textarea id="refinedOutput" placeholder="Refined prompt will appear here..." readonly></textarea>
                         </div>
 
-                        <!-- Audio Input -->
                         <!-- Audio Input -->
                         <div id="audioInput" class="input-section hidden">
                             <button id="recordButton">Start Recording</button>
@@ -197,7 +188,6 @@
                                 <button id="refineButtonAudio">Refine</button>
                                 <!-- Loading Message for Refinement -->
                                 <p id="loadingRefinementAudio" class="loading-message hidden">Refining prompt, please wait...</p>
-
                             </div>
 
                             <!-- Suitability Output (non-editable) -->
@@ -207,7 +197,6 @@
                             </div>
                             <!-- Refined Prompt Output for Audio (editable) -->
                             <textarea id="refinedOutputAudio" class="hidden" placeholder="Refined prompt will appear here..." readonly></textarea>
-
                         </div>
 
                         <!-- Final Selection for Text Input -->
@@ -261,26 +250,37 @@
                                 <!-- Preview button will be added dynamically after download -->
                             </div>
                         </div>
+                    </div>
                 </div>
-
             </div>
-        </div>
-
-        
+        </div>  
     </main>
+
     <!-- THREE.js main library -->
-<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
 
-<!-- THREE.js extensions - make sure to use these exact CDN paths -->
-<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <!-- THREE.js extensions -->
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
 
-<!-- Your existing scripts -->
-<script src="functions/navigation.js"></script>
-<script src="functions/input.js"></script>
-<script src="functions/output.js"></script>
-<script src="functions/make.js"></script>
+    <!-- CORS Proxy Utility -->
+    <script>
+        // Function to use a CORS proxy for external URLs
+        function proxyUrl(url) {
+            // Only proxy URLs from specific domains that have CORS issues
+            if (url.includes('assets.meshy.ai') || url.includes('zoo.dev')) {
+                // Use a public CORS proxy
+                return `https://corsproxy.io/?${encodeURIComponent(url)}`;
+            }
+            return url;
+        }
+    </script>
 
-    
+    <!-- Load your JavaScript files -->
+    <script src="functions/navigation.js"></script>
+    <script src="functions/input.js"></script>
+    <script src="functions/output.js"></script>
+    <script src="functions/make.js"></script>
+    <script src="functions/app.js"></script>
 </body>
 </html>
