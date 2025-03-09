@@ -230,26 +230,46 @@ async function generateOutput() {
     const meshyApiKey = document.getElementById("meshyApiKey").value;
     const inputText = localStorage.getItem("finalPrompt")?.trim() || "";
     
+    // Get input and output types early
+    const inputType = document.getElementById("inputType").value;
+    const outputType = document.getElementById("outputType").value; // Only define once!
+    
     const loadingMessage = document.getElementById("loadingOutput");
-
-    if (!apiKey) {
-        alert("Please enter your OpenAI API Key.");
-        return;
-    }
-
-    if (!inputText) {
-        alert("❌ Please provide input text before generating output.");
-        return;
-    }
-
-    console.log("🚀 Using Input for Output Generation:", inputText);
-    const outputType = document.getElementById("outputType").value;
     const outputBox = document.getElementById("outputBox");
     const outputImage = document.getElementById("outputImage");
     const output3D = document.getElementById("output3D");
     const output3DViewer = document.getElementById("output3DViewer");
     const downloadButton = document.getElementById("downloadImage");
     const download3DButton = document.getElementById("download3D");
+
+    // Now your validation code that uses outputType and inputType
+    // Special handling for images with Meshy
+    if (outputType === "meshy" && (inputType === "image" || inputType === "webcam")) {
+        // Check if "use image as input" is selected
+        const useImageAsInput = inputType === "image" 
+            ? document.querySelector('input[name="imageInputChoice"][value="image"]')?.checked
+            : document.querySelector('input[name="webcamInputChoice"][value="image"]')?.checked;
+            
+        if (useImageAsInput) {
+            // Skip text input validation for image-to-3D
+            console.log("✅ Using image directly for Meshy, skipping text validation");
+        } else if (!inputText) {
+            // If using description but no text provided
+            alert("❌ Please provide a description or select 'use image as input'.");
+            return;
+        }
+    } else if (!inputText) {
+        // For all other cases, require text input
+        alert("❌ Please provide input text before generating output.");
+        return;
+    }
+
+    if (!apiKey) {
+        alert("Please enter your OpenAI API Key.");
+        return;
+    }
+
+    console.log("🚀 Using Input for Output Generation:", inputText);
 
     if (outputType === "meshy" && !meshyApiKey) {
         alert("Please enter your Meshy API Key.");
@@ -260,6 +280,7 @@ async function generateOutput() {
         alert("Please enter your ZooCAD API Key.");
         return;
     }
+
 
     // Remove preview button if it exists
     const previewButton = document.getElementById("preview3D");
@@ -340,6 +361,56 @@ async function generateOutput() {
                 console.error("Error generating image:", error);
                 outputBox.value = "Error generating output.";
                 outputBox.classList.remove("hidden");
+            }
+        } // Add this code to your existing generateOutput function in output.js
+        // Place it after your initial checks but before the main outputType conditionals
+        
+        // Special handling for image-to-3D with Meshy
+        if (outputType === "meshy" && (inputType === "image" || inputType === "webcam")) {
+            // Check if "use image as input" is selected
+            const useImageAsInput = inputType === "image" 
+                ? document.querySelector('input[name="imageInputChoice"][value="image"]').checked
+                : document.querySelector('input[name="webcamInputChoice"][value="image"]').checked;
+        
+            if (useImageAsInput) {
+                // Get the image source
+                let imageSource;
+                if (inputType === "image") {
+                    imageSource = document.getElementById("imagePreview");
+                } else if (inputType === "webcam") {
+                    imageSource = document.getElementById("capturedImage");
+                }
+        
+                if (!imageSource || !imageSource.src || imageSource.classList.contains("hidden")) {
+                    alert("❌ Please provide an image before generating 3D model.");
+                    return;
+                }
+        
+                // Show the loading message
+                loadingMessage.classList.remove("hidden");
+        
+                // Remove preview button if it exists
+                const previewButton = document.getElementById("preview3D");
+                if (previewButton) {
+                    previewButton.remove();
+                }
+        
+                try {
+                    // Convert image to base64 and remove the data URL prefix
+                    const base64Image = imageSource.src.split(',')[1];
+                    
+                    // Call Meshy API with image
+                    await generateMeshyFrom3DImage(base64Image, meshyApiKey);
+                    
+                    return; // Exit early as we've handled the image case
+                } catch (error) {
+                    console.error("Error generating 3D model from image:", error);
+                    outputBox.value = "Error generating 3D model from image.";
+                    outputBox.classList.remove("hidden");
+                    output3D.classList.add("hidden");
+                    loadingMessage.classList.add("hidden");
+                    return;
+                }
             }
         } else if (outputType === "meshy") {
             // Generate 3D model using Meshy API
@@ -573,4 +644,112 @@ function downloadGeneratedImage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+// Add this new function to your output.js file
+
+// Function for generating 3D models from images using Meshy
+async function generateMeshyFrom3DImage(base64Image, meshyApiKey) {
+    const outputBox = document.getElementById("outputBox");
+    const output3D = document.getElementById("output3D");
+    const output3DViewer = document.getElementById("output3DViewer");
+    const download3DButton = document.getElementById("download3D");
+    const loadingMessage = document.getElementById("loadingOutput");
+
+    try {
+        // Show the 3D output container early for better UX
+        output3D.classList.remove("hidden");
+        output3DViewer.innerHTML = '<div class="loading-3d">Preparing to upload image for 3D conversion...</div>';
+        outputBox.classList.add("hidden");
+
+        // Create a data URL from the base64 image
+        const imageDataUrl = `data:image/png;base64,${base64Image}`;
+        
+        // Try the Meshy API
+        const response = await fetch("https://api.meshy.ai/openapi/v2/text-to-3d", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${meshyApiKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                mode: "preview",
+                prompt: "Generate 3D model from this image",
+                imageData: base64Image,
+                art_style: "realistic",
+                should_remesh: true
+            })
+        });
+
+        let responseText = await response.text();
+        let result;
+        
+        try {
+            // Try to parse the response as JSON
+            result = JSON.parse(responseText);
+        } catch (e) {
+            console.error("Failed to parse response as JSON:", responseText);
+            throw new Error(`Failed to parse Meshy API response: ${responseText}`);
+        }
+
+        // Check for subscription error specifically
+        if (responseText.includes("NoMoreConcurrentTasks") || 
+            (result && result.message && result.message.includes("NoMoreConcurrentTasks"))) {
+            
+            // Display a more user-friendly message for subscription limits
+            output3DViewer.innerHTML = `
+                <div class="error-message">
+                    <h3>Subscription Limit Reached</h3>
+                    <p>Your Meshy account has reached its concurrent task limit.</p>
+                    <p>Options to resolve this:</p>
+                    <ul style="text-align: left; margin: 10px 20px;">
+                        <li>Wait for your existing tasks to complete</li>
+                        <li>Cancel pending tasks in your Meshy dashboard</li>
+                        <li>Upgrade your subscription at <a href="https://www.meshy.ai/settings/subscription" target="_blank">Meshy.ai</a></li>
+                    </ul>
+                </div>
+            `;
+            throw new Error("Meshy subscription limit reached: You cannot run more concurrent tasks on your current plan.");
+        }
+
+        if (!response.ok) {
+            throw new Error(`Meshy API error: ${responseText}`);
+        }
+        
+        // Extract task ID
+        const taskId = result.result;
+        
+        if (!taskId) {
+            throw new Error("No task ID returned from Meshy API");
+        }
+
+        output3DViewer.innerHTML = '<div class="loading-3d">Task submitted successfully. Waiting for model generation...</div>';
+        
+        // Use your existing pollMeshyTaskStatus function
+        const modelUrl = await pollMeshyTaskStatus(taskId, meshyApiKey);
+        
+        if (modelUrl) {
+            download3DButton.classList.remove("hidden");
+            download3DButton.setAttribute("data-model-url", modelUrl);
+        } else {
+            throw new Error("Failed to get model URL from completed task");
+        }
+    } catch (error) {
+        console.error("Error in image-to-3D generation:", error);
+        
+        // Check if this is a subscription error and display a more user-friendly message
+        if (error.message && error.message.includes("subscription limit")) {
+            outputBox.value = `Meshy subscription limit reached: Please wait for your existing tasks to complete or upgrade your subscription.`;
+        } else {
+            outputBox.value = `Error generating 3D model from image: ${error.message}`;
+        }
+        
+        outputBox.classList.remove("hidden");
+        // Keep the 3D output visible if we already displayed a custom error message there
+        if (!output3DViewer.innerHTML.includes("Subscription Limit Reached")) {
+            output3D.classList.add("hidden");
+        }
+    } finally {
+        loadingMessage.classList.add("hidden");
+    }
 }
