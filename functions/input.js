@@ -802,3 +802,72 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+// Add these functions to your input.js file
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up event listeners for image/description selection for meshy
+    setupImageInputSelectionListeners();
+});
+
+// Function to set up image input selection listeners
+function setupImageInputSelectionListeners() {
+    // For uploaded images
+    document.querySelectorAll('input[name="imageInputChoice"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            updateImageInputSelection("image", this.value);
+        });
+    });
+    
+    // For webcam images
+    document.querySelectorAll('input[name="webcamInputChoice"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            updateImageInputSelection("webcam", this.value);
+        });
+    });
+}
+
+// Function to update image input selection based on radio button choice
+function updateImageInputSelection(sourceType, choiceValue) {
+    const outputTypeSelect = document.getElementById("outputType");
+    
+    // If using image directly and output type is meshy, we don't need text prompt
+    if (choiceValue === "image" && outputTypeSelect.value === "meshy") {
+        console.log(`✅ Using ${sourceType} directly for Meshy 3D generation`);
+        
+        // Clear the finalPrompt in localStorage as we'll use the image directly
+        localStorage.removeItem("finalPrompt");
+    } else if (choiceValue === "description") {
+        // If using description, make sure we have a description to use
+        const descriptionElement = sourceType === "image" 
+            ? document.getElementById("imageDescription") 
+            : document.getElementById("capturedImageDescription");
+        
+        const description = descriptionElement.value.trim();
+        
+        if (description) {
+            localStorage.setItem("finalPrompt", description);
+            console.log(`✅ Using ${sourceType} description as prompt:`, description);
+        } else {
+            alert(`❌ Please describe the ${sourceType} first.`);
+            document.querySelector(`input[name="${sourceType}InputChoice"][value="image"]`).checked = true;
+        }
+    }
+}
+
+// Helper function to get the selected image element based on input type
+function getSelectedImageElement() {
+    const inputType = document.getElementById("inputType").value;
+    
+    if (inputType === "image") {
+        // Check if image is selected as input
+        const useImageAsInput = document.querySelector('input[name="imageInputChoice"][value="image"]').checked;
+        return useImageAsInput ? document.getElementById("imagePreview") : null;
+    } else if (inputType === "webcam") {
+        // Check if image is selected as input
+        const useImageAsInput = document.querySelector('input[name="webcamInputChoice"][value="image"]').checked;
+        return useImageAsInput ? document.getElementById("capturedImage") : null;
+    }
+    
+    return null;
+}
