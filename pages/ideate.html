@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaTool - Ideate</title>
+    <link rel="stylesheet" href="css/ideate.css"> <!-- Separate CSS for Ideate page -->
+</head>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22black%22><text y=%221em%22 font-size=%2224%22>🤖</text></svg>">
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="../index.html" class="navbar-brand">MegaTool</a>
+        <div class="navbar-links">
+            <button onclick="window.location.href='../index.html'">Home</button>
+            <button onclick="window.location.href='ideate.html'">Ideate</button>
+            <button onclick="window.location.href='make.html'">Make</button>
+            <button id="openSidebar">⚙️</button>
+        </div>
+    </nav>
+
+    <!-- API Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button id="closeSidebar">&times;</button>
+        <h2>API Settings</h2>
+        <div class="api-section">
+            <label for="apiKey">OpenAI API Key:</label>
+            <input type="password" id="apiKey" placeholder="Enter your OpenAI API key">
+
+            <label for="meshyApiKey">Meshy API Key:</label>
+            <input type="password" id="meshyApiKey" placeholder="Enter your Meshy API key">
+
+            <button id="saveApiKeys">Save API Keys</button>
+        </div>
+    </div>
+
+    <!-- Ideate Page -->
+    <main>
+        <!-- Change this line -->
+        <div id="ideate" class="page">
+            <!-- Instead of -->
+            <!-- <div id="ideate" class="page"> -->
+            <div class="two-column">
+                <!-- Input Column -->
+                <div class="column">
+                    <h2>Input</h2>
+                    <select id="inputType" class="select-control">
+                        <option value="">Select input type...</option>
+                        <option value="text">Text</option>
+                        <option value="image">Image Upload</option>
+                        <option value="webcam">Webcam</option>
+                        <option value="audio">Voice Recording</option>
+                    </select>
+                    
+                    <div class="input-controls">
+                        <!-- Image Input -->
+                        <div id="imageInput" class="input-section hidden">
+                            <input type="file" id="imageUpload" accept="image/*">
+                            <img id="imagePreview" class="hidden">
+                            <select id="imageDescribeType">
+                                <option value="simple">Describe this image</option>
+                                <option value="3d_cad">Describe this image for CAD generation</option>
+                                <option value="3d_mesh">Describe this image for Mesh generation</option>
+                                <option value="image_generation">Describe this image for Image generation</option>
+                            </select>
+                            <button id="describeImageButton">Describe Image</button>
+                            <p id="loadingImageDescription" class="loading-message hidden">Describing image, please wait...</p>
+                            <textarea id="imageDescription" class="hidden" placeholder="Image description will appear here..."></textarea>
+                            <div id="imageInputSelection">
+                                <label><input type="radio" name="imageInputChoice" value="image" checked> Use image as input</label>
+                                <label><input type="radio" name="imageInputChoice" value="description"> Use description as input</label>
+                            </div>
+                        </div>
+
+                        <!-- Webcam Input -->
+                        <div id="webcamInput" class="input-section hidden">
+                            <video id="webcam" autoplay></video>
+                            <button id="captureButton">Take Photo</button>
+                            <canvas id="canvas" class="hidden"></canvas>
+                            <img id="capturedImage" class="hidden">
+                            <button id="downloadCapturedImage" class="hidden">Download Image</button>
+                            <select id="webcamDescribeType">
+                                <option value="simple">Describe this image</option>
+                                <option value="3d_cad">Describe this image for CAD generation</option>
+                                <option value="3d_mesh">Describe this image for Mesh generation</option>
+                                <option value="image_generation">Describe this image for Image generation</option>
+                            </select>
+                            <button id="describeCapturedImageButton">Describe Captured Image</button>
+                            <p id="loadingCapturedImageDescription" class="loading-message hidden">Describing image, please wait...</p>
+                            <textarea id="capturedImageDescription" class="hidden" placeholder="Captured image description will appear here..."></textarea>
+                            <div id="webcamInputSelection">
+                                <label><input type="radio" name="webcamInputChoice" value="image" checked> Use image as input</label>
+                                <label><input type="radio" name="webcamInputChoice" value="description"> Use description as input</label>
+                            </div>
+                        </div>
+
+                        <!-- Text Input -->
+                        <div id="textInput" class="input-section hidden">
+                            <textarea id="userText" placeholder="Enter your text here..."></textarea>
+                            <div id="refinementSection" class="hidden">
+                                <label for="refinementType">Refine for:</label>
+                                <select id="refinementType">
+                                    <option value="">Select refinement type...</option>
+                                    <option value="3d_cad">3D CAD</option>
+                                    <option value="3d_mesh">3D Mesh</option>
+                                    <option value="image_generation">Image Generation</option>
+                                </select>
+                                <button id="refineButton">Refine</button>
+                                <p id="loadingRefinement" class="loading-message hidden">Refining prompt, please wait...</p>
+                            </div>
+                            <div id="suitabilityOutput" class="hidden">
+                                <h3>Suitability:</h3>
+                                <p id="suitabilityText"></p>
+                            </div>
+                            <textarea id="refinedOutput" placeholder="Refined prompt will appear here..." readonly></textarea>
+                        </div>
+
+                        <!-- Audio Input -->
+                        <div id="audioInput" class="input-section hidden">
+                            <button id="recordButton">Start Recording</button>
+                            <textarea id="transcription" class="hidden"></textarea>
+                            <div id="refinementSectionAudio" class="hidden">
+                                <label for="refinementTypeAudio">Refine for:</label>
+                                <select id="refinementTypeAudio">
+                                    <option value="">Select refinement type...</option>
+                                    <option value="3d_cad">3D CAD</option>
+                                    <option value="3d_mesh">3D Mesh</option>
+                                    <option value="image_generation">Image Generation</option>
+                                </select>
+                                <button id="refineButtonAudio">Refine</button>
+                                <p id="loadingRefinementAudio" class="loading-message hidden">Refining prompt, please wait...</p>
+                            </div>
+                            <div id="suitabilityOutputAudio" class="hidden">
+                                <h3>Suitability:</h3>
+                                <p id="suitabilityTextAudio"></p>
+                            </div>
+                            <textarea id="refinedOutputAudio" class="hidden" placeholder="Refined prompt will appear here..." readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Output Column -->
+                <div class="column">
+                    <h2>Output</h2>
+                    <select id="outputType" class="select-control hidden">
+                        <option value="">Select output type...</option>
+                        <option value="text">Text</option>
+                        <option value="image">Image</option>
+                        <option value="meshy">Meshy - Mesh generated 3D</option>
+                        <option value="zoocad">Zoo - CAD model</option>
+                    </select>
+
+                    <div class="output-controls">
+                        <button id="generateOutput" class="hidden">Generate</button>
+                        <button id="goToZooCadButton" class="hidden">Go to ZooCAD</button>
+                        <p id="loadingOutput" class="loading-message hidden">Generating output, please wait...</p>
+                        <textarea id="outputBox" readonly class="hidden"></textarea>
+                        <img id="outputImage" class="hidden">
+                        <button id="downloadImage" class="hidden">Download Image</button>
+                        <div id="output3D" class="hidden">
+                            <div id="output3DViewer" class="viewer-container"></div>
+                            <div class="model-controls">
+                                <button id="download3D" class="hidden">Download 3D Model (.obj)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </main>
+
+    <!-- THREE.js main library -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+
+    <!-- THREE.js extensions -->
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+
+    <!-- Load your JavaScript files -->
+    <script src="../functions/navigation.js"></script>
+    <script src="../functions/input.js"></script>
+    <script src="../functions/output.js"></script>
+    <script src="../functions/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const ideatePage = document.getElementById("ideate");
+          if (ideatePage) {
+            ideatePage.style.display = "block";  // this overrides JS that hid it
+          }
+        });
+      </script>
+      
+</body>
+</html>

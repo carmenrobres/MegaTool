@@ -1,37 +1,26 @@
+// Define functions first
+function handleInputChange(event) {
+    const input = event.target.value;
+    localStorage.setItem('userInput', input);
+    console.log('Input changed:', input);
+}
+
+// Then expose it to the window object
 window.handleInputChange = handleInputChange;
 
 document.addEventListener('DOMContentLoaded', function () {
+    if (!document.getElementById("ideate")) return; // don't run on make.html
     let stream = null;
     let isRecording = false;
     let mediaRecorder = null;
     let audioChunks = [];
 
-    // Handle input type changes
-    function handleInputChange() {
-        stopAllMedia();
-        hideAllSections();
-    
-        const selectedInput = document.getElementById("inputType").value;
-        if (!selectedInput) return;
-    
-        // Show the correct input section
-        const section = document.getElementById(selectedInput + "Input");
-        section.classList.remove("hidden");
-    
-        // Show output type selector when input is selected
-        const outputTypeSelect = document.getElementById("outputType");
-        outputTypeSelect.classList.toggle("hidden", !selectedInput);
-    
-        // Hide selection boxes when switching input
-        document.getElementById("finalSelectionText").classList.add("hidden");
-        document.getElementById("finalSelectionAudio").classList.add("hidden");
-    
-        if (selectedInput === "webcam") {
-            initWebcam();
-        } else if (selectedInput === "audio") {
-            initAudio();
-        }
-    }
+
+    // Add event listeners for your input elements
+    const textInputs = document.querySelectorAll('textarea, input[type="text"]');
+    textInputs.forEach(input => {
+        input.addEventListener('input', handleInputChange);
+    });
     
 
     function clearInputFields(selectedInput) {

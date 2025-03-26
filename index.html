@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaTool</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>MegaTool - Landing</title>
+    
+    <!-- Link to Landing CSS -->
+    <link rel="stylesheet" href="pages/css/landing.css">
+    
+    <!-- Optional Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22black%22><text y=%221em%22 font-size=%2224%22>🤖</text></svg>">
 </head>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22black%22><text y=%221em%22 font-size=%2224%22>🤖</text></svg>">
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <a href="#" class="navbar-brand">MegaTool</a>
+        <a href="index.html" class="navbar-brand">MegaTool</a>
         <div class="navbar-links">
-            <button onclick="navigateTo('landing')">Home</button>
-            <button onclick="navigateTo('ideate')">Ideate</button>
-            <button onclick="navigateTo('make')">Make</button>
+            <!-- Links to other pages -->
+            <button onclick="window.location.href='index.html'">Home</button>
+            <button onclick="window.location.href='pages/ideate.html'">Ideate</button>
+            <button onclick="window.location.href='pages/make.html'">Make</button>
             <button id="openSidebar">⚙️</button>
         </div>
     </nav>
@@ -27,7 +32,6 @@
             <label for="apiKey">OpenAI API Key:</label>
             <input type="password" id="apiKey" placeholder="Enter your OpenAI API key">
 
-            <!-- Add Meshy API Key Input -->
             <label for="meshyApiKey">Meshy API Key:</label>
             <input type="password" id="meshyApiKey" placeholder="Enter your Meshy API key">
 
@@ -35,252 +39,20 @@
         </div>
     </div>
 
-    <!-- Pages -->
+    <!-- Landing Page Content -->
     <main>
-        <!-- Landing -->
         <div id="landing" class="page">
             <h1>Welcome to MegaTool</h1>
             <p>Your creative companion for prototyping</p>
             <div class="landing-buttons">
-                <button onclick="navigateTo('ideate')">Start Ideating</button>
-                <button onclick="navigateTo('make')">Make Something</button>
+                <button onclick="window.location.href='pages/ideate.html'">Start Ideating</button>
+                <button onclick="window.location.href='pages/make.html'">Make Something</button>
             </div>
         </div>
-        <!-- Make -->
-        <div id="make" class="page">
-            <h2>Prepare for 3D Printing</h2>
-            
-            <div class="make-container two-column-make">
-                <!-- Left Column - 3D Model Viewer -->
-                <div class="make-column model-column">
-                    <h3>3D Model</h3>
-                    <label for="objUpload">Upload OBJ File:</label>
-                    <input type="file" id="objUpload" accept=".obj">
-                    <div class="canvas-container">
-                        <canvas id="objCanvas"></canvas>
-                    </div>
-                    <button id="analyze3DPrint" class="primary-button">Analyze for 3D Printing</button>
-                </div>
-                
-                <!-- Right Column - Analysis Results -->
-                <div class="make-column analysis-column">
-                    <h3>Print Recommendations</h3>
-                    <p class="help-text">Upload an OBJ file and click "Analyze" to get detailed 3D printing recommendations.</p>
-                    <p id="loading3DPrint" class="loading-message hidden">Analyzing your file, please wait...</p>
-                    <textarea id="printInstructions" class="hidden" placeholder="Preparation steps will appear here..." readonly></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ideate -->
-        <div id="ideate" class="page">
-            <div class="two-column">
-                <!-- Input Column -->
-                <div class="column">
-                    <h2>Input</h2>
-                    <select id="inputType" class="select-control">
-                        <option value="">Select input type...</option>
-                        <option value="text">Text</option>
-                        <option value="image">Image Upload</option>
-                        <option value="webcam">Webcam</option>
-                        <option value="audio">Voice Recording</option>
-                    </select>
-                    
-                    <div class="input-controls">
-                       
-                        <!-- Image Input -->
-                        <div id="imageInput" class="input-section hidden">
-                            <input type="file" id="imageUpload" accept="image/*">
-                            <img id="imagePreview" class="hidden">
-
-                            <!-- Selection for description type -->
-                            <select id="imageDescribeType">
-                                <option value="simple">Describe this image</option>
-                                <option value="3d_cad">Describe this image for CAD generation</option>
-                                <option value="3d_mesh">Describe this image for Mesh generation</option>
-                                <option value="image_generation">Describe this image for Image generation</option>
-                            </select>
-
-                            <button id="describeImageButton">Describe Image</button>
-
-                            <!-- Loading message -->
-                            <p id="loadingImageDescription" class="loading-message hidden">Describing image, please wait...</p>
-
-                            <!-- Description output -->
-                            <textarea id="imageDescription" class="hidden" placeholder="Image description will appear here..." ></textarea>
-
-                            <!-- Selection Tool for Using Description -->
-                            <div id="imageInputSelection">
-                                <label><input type="radio" name="imageInputChoice" value="image" checked> Use image as input</label>
-                                <label><input type="radio" name="imageInputChoice" value="description"> Use description as input</label>
-                            </div>
-                        </div>
-                        
-                        <!-- Webcam Input -->
-                        <div id="webcamInput" class="input-section hidden">
-                            <video id="webcam" autoplay></video>
-                            <button id="captureButton">Take Photo</button>
-                            <canvas id="canvas" class="hidden"></canvas>
-                            <img id="capturedImage" class="hidden">
-                            <button id="downloadCapturedImage" class="hidden">Download Image</button>
-
-                            <!-- Selection for description type -->
-                            <select id="webcamDescribeType">
-                                <option value="simple">Describe this image</option>
-                                <option value="3d_cad">Describe this image for CAD generation</option>
-                                <option value="3d_mesh">Describe this image for Mesh generation</option>
-                                <option value="image_generation">Describe this image for Image generation</option>
-                            </select>
-
-                            <button id="describeCapturedImageButton">Describe Captured Image</button>
-
-                            <!-- Loading message -->
-                            <p id="loadingCapturedImageDescription" class="loading-message hidden">Describing image, please wait...</p>
-
-                            <!-- Description output -->
-                            <textarea id="capturedImageDescription" class="hidden" placeholder="Captured image description will appear here..."></textarea>
-
-                            <!-- Selection Tool for Using Description -->
-                            <div id="webcamInputSelection">
-                                <label><input type="radio" name="webcamInputChoice" value="image" checked> Use image as input</label>
-                                <label><input type="radio" name="webcamInputChoice" value="description"> Use description as input</label>
-                            </div>
-                        </div>
-
-                        <!-- Text Input -->
-                        <div id="textInput" class="input-section hidden">
-                            <textarea id="userText" placeholder="Enter your text here..."></textarea>
-                            <!-- Add Refinement Section -->
-                            <div id="refinementSection" class="hidden">
-                                <label for="refinementType">Refine for:</label>
-                                <select id="refinementType">
-                                    <option value="">Select refinement type...</option>
-                                    <option value="3d_cad">3D CAD</option>
-                                    <option value="3d_mesh">3D Mesh</option>
-                                    <option value="image_generation">Image Generation</option>
-                                </select>
-                                <button id="refineButton">Refine</button>
-                                <!-- Loading Message for Refinement -->
-                                <p id="loadingRefinement" class="loading-message hidden">Refining prompt, please wait...</p>
-                            </div>
-                            <!-- Suitability Output (non-editable) -->
-                            <div id="suitabilityOutput" class="hidden">
-                                <h3>Suitability:</h3>
-                                <p id="suitabilityText"></p> <!-- Non-editable text -->
-                            </div>
-                            <textarea id="refinedOutput" placeholder="Refined prompt will appear here..." readonly></textarea>
-                        </div>
-
-                        <!-- Audio Input -->
-                        <div id="audioInput" class="input-section hidden">
-                            <button id="recordButton">Start Recording</button>
-                            <textarea id="transcription" class="hidden"></textarea>
-                            <!-- Add Refinement Section -->
-                            <!-- Refinement Section for Audio -->
-                            <div id="refinementSectionAudio" class="hidden">
-                                <label for="refinementTypeAudio">Refine for:</label>
-                                <select id="refinementTypeAudio">
-                                    <option value="">Select refinement type...</option>
-                                    <option value="3d_cad">3D CAD</option>
-                                    <option value="3d_mesh">3D Mesh</option>
-                                    <option value="image_generation">Image Generation</option>
-                                </select>
-                                <button id="refineButtonAudio">Refine</button>
-                                <!-- Loading Message for Refinement -->
-                                <p id="loadingRefinementAudio" class="loading-message hidden">Refining prompt, please wait...</p>
-                            </div>
-
-                            <!-- Suitability Output (non-editable) -->
-                            <div id="suitabilityOutputAudio" class="hidden">
-                                <h3>Suitability:</h3>
-                                <p id="suitabilityTextAudio"></p> <!-- Non-editable text -->
-                            </div>
-                            <!-- Refined Prompt Output for Audio (editable) -->
-                            <textarea id="refinedOutputAudio" class="hidden" placeholder="Refined prompt will appear here..." readonly></textarea>
-                        </div>
-
-                        <!-- Final Selection for Text Input -->
-                        <div id="finalSelectionText" class="final-selection hidden">
-                            <h3>Choose Input to Send:</h3>
-                            <label>
-                                <input type="radio" name="finalInputText" value="original"> My Prompt
-                            </label>
-                            <label>
-                                <input type="radio" name="finalInputText" value="refined" checked> Refined Prompt
-                            </label>
-                        </div>
-
-                        <!-- Final Selection for Audio Input -->
-                        <div id="finalSelectionAudio" class="final-selection hidden">
-                            <h3>Choose Input to Send:</h3>
-                            <label>
-                                <input type="radio" name="finalInputAudio" value="original"> My Transcription
-                            </label>
-                            <label>
-                                <input type="radio" name="finalInputAudio" value="refined" checked> Refined Prompt
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Output Column -->
-                <div class="column">
-                    <h2>Output</h2>
-                    <select id="outputType" class="select-control hidden">
-                        <option value="">Select output type...</option>
-                        <option value="text">Text</option>
-                        <option value="image">Image</option>
-                        <option value="meshy">Meshy - Mesh generated 3D</option>
-                        <option value="zoocad">Zoo - CAD model</option>
-                    </select>
-
-                    <div class="output-controls">
-                        <button id="generateOutput" class="hidden">Generate</button>
-                        <button id="goToZooCadButton" class="hidden">Go to ZooCAD</button>
-                        <!-- Loading Message for Output -->
-                        <p id="loadingOutput" class="loading-message hidden">Generating output, please wait...</p>
-                        <textarea id="outputBox" readonly class="hidden"></textarea>
-                        <img id="outputImage" class="hidden">
-                        <button id="downloadImage" class="hidden">Download Image</button>
-                        <!-- Add a placeholder for 3D model output -->
-                        <div id="output3D" class="hidden">
-                            <div id="output3DViewer" class="viewer-container"></div>
-                            <div class="model-controls">
-                                <button id="download3D" class="hidden">Download 3D Model (.obj)</button>
-                                <!-- Preview button will be added dynamically after download -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>  
     </main>
 
-    <!-- THREE.js main library -->
-    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
-
-    <!-- THREE.js extensions -->
-    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
-
-    <!-- CORS Proxy Utility -->
-    <script>
-        // Function to use a CORS proxy for external URLs
-        function proxyUrl(url) {
-            // Only proxy URLs from specific domains that have CORS issues
-            if (url.includes('assets.meshy.ai') || url.includes('zoo.dev')) {
-                // Use a public CORS proxy
-                return `https://corsproxy.io/?${encodeURIComponent(url)}`;
-            }
-            return url;
-        }
-    </script>
-
-    <!-- Load your JavaScript files -->
+    <!-- Load the necessary JavaScript files -->
     <script src="functions/navigation.js"></script>
-    <script src="functions/input.js"></script>
-    <script src="functions/output.js"></script>
-    <script src="functions/make.js"></script>
     <script src="functions/app.js"></script>
 </body>
 </html>

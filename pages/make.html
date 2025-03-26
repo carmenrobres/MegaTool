@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaTool - Make</title>
+    <link rel="stylesheet" href="css/make.css"> <!-- Separate CSS for Make page -->
+</head>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22black%22><text y=%221em%22 font-size=%2224%22>🤖</text></svg>">
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="../index.html'" class="navbar-brand">MegaTool</a>
+        <div class="navbar-links">
+            <button onclick="window.location.href='../index.html'">Home</button>
+            <button onclick="window.location.href='ideate.html'">Ideate</button>
+            <button onclick="window.location.href='make.html'">Make</button>
+            <button id="openSidebar">⚙️</button>
+        </div>
+    </nav>
+
+    <!-- API Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button id="closeSidebar">&times;</button>
+        <h2>API Settings</h2>
+        <div class="api-section">
+            <label for="apiKey">OpenAI API Key:</label>
+            <input type="password" id="apiKey" placeholder="Enter your OpenAI API key">
+
+            <label for="meshyApiKey">Meshy API Key:</label>
+            <input type="password" id="meshyApiKey" placeholder="Enter your Meshy API key">
+
+            <button id="saveApiKeys">Save API Keys</button>
+        </div>
+    </div>
+
+    <!-- Make Page -->
+    <main>
+        <div id="make" class="page">
+
+            <h2>Prepare for 3D Printing</h2>
+
+            <div class="make-container two-column-make">
+                <!-- Left Column - 3D Model Viewer -->
+                <div class="make-column model-column">
+                    <h3>3D Model</h3>
+                    <label for="objUpload">Upload OBJ File:</label>
+                    <input type="file" id="objUpload" accept=".obj">              
+                    <button id="analyze3DPrint" class="primary-button">Analyze for 3D Printing</button>
+                </div>
+
+                <!-- Right Column - Analysis Results -->
+                <div class="make-column analysis-column">
+                    <h3>Print Recommendations</h3>
+                    <p class="help-text">Upload an OBJ file and click "Analyze" to get detailed 3D printing recommendations.</p>
+                    <p id="loading3DPrint" class="loading-message hidden">Analyzing your file, please wait...</p>
+                    <textarea id="printInstructions" class="hidden" placeholder="Preparation steps will appear here..." readonly></textarea>
+                    <div id="formattedPrintInstructions" class="markdown-output hidden"></div>
+                </div>
+            </div>
+        </div>  
+    </main>
+
+    <!-- Replace the THREE.js script includes with these Babylon.js includes -->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <!-- Load your JavaScript files -->
+    <script src="../functions/navigation.js"></script>
+    <script src="../functions/input.js"></script>
+    <script src="../functions/output.js"></script>
+    <script src="../functions/make.js"></script>
+    <script src="../functions/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const makePage = document.getElementById("make");
+          if (makePage) {
+            makePage.classList.remove("hidden");
+            makePage.style.display = "block";
+          }
+        });
+      </script>
+    
+      
+</body>
+</html>

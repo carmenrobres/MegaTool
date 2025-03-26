@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    if (!document.getElementById("ideate")) return; // don't run on make.html
     console.log("Output.js loaded and running");
     
     // Add event listener for output type change
@@ -514,7 +515,7 @@ function initViewer(containerId) {
     }
 }
 
-// Load OBJ model
+// Load OBJ model with CORS proxy
 function loadOBJModel(url) {
     console.log("Loading OBJ model:", url);
     
@@ -529,7 +530,7 @@ function loadOBJModel(url) {
     loadingDiv.className = 'loading-3d';
     loadingDiv.textContent = 'Loading 3D model...';
     
-    if (container && !renderer) {
+    if (container && !container.querySelector('canvas')) {
         container.innerHTML = '';
         container.appendChild(loadingDiv);
     }
@@ -544,8 +545,12 @@ function loadOBJModel(url) {
         // Create new OBJLoader
         const loader = new THREE.OBJLoader();
         
+        // Apply CORS proxy to the URL to fix CORS issues
+        const proxiedUrl = proxyUrl(url);
+        console.log("Using proxied URL:", proxiedUrl);
+        
         loader.load(
-            url,
+            proxiedUrl,
             (loadedModel) => {
                 model = loadedModel;
                 console.log("Model loaded successfully");
@@ -579,15 +584,34 @@ function loadOBJModel(url) {
             (error) => {
                 console.error('Error loading OBJ model:', error);
                 if (loadingDiv) {
-                    loadingDiv.textContent = 'Error loading 3D model';
+                    loadingDiv.textContent = 'Error loading 3D model. CORS issues may be preventing access.';
                     loadingDiv.style.color = 'red';
+                    
+                    // Add download button as fallback
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.textContent = 'Download Model Instead';
+                    downloadBtn.className = 'fallback-button';
+                    downloadBtn.style.marginTop = '10px';
+                    downloadBtn.addEventListener('click', function() {
+                        // Create download link for the original URL
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'model.obj';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+                    
+                    if (container) {
+                        container.appendChild(downloadBtn);
+                    }
                 }
             }
         );
     } catch (error) {
         console.error("Error creating or using OBJLoader:", error);
         if (loadingDiv && container) {
-            loadingDiv.textContent = 'Error: 3D model loading failed';
+            loadingDiv.textContent = 'Error: 3D model loading failed. Try downloading instead.';
             loadingDiv.style.color = 'red';
             container.appendChild(loadingDiv);
         }

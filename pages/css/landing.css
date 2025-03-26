@@ -1,0 +1,171 @@
+:root {
+  --primary: #007BFF;
+  --dark: #222;
+  --light: #f8f9fa;
+  --spacing: 20px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--light);
+}
+
+/* Constant Elements */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--dark);
+  padding: 0 var(--spacing);
+  height: 60px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.navbar-brand {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: flex;
+  gap: var(--spacing);
+}
+
+.navbar button {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px 16px;
+  font-size: 16px;
+}
+
+.navbar button:hover {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+/* Landing Page */
+#landing {
+  height: calc(100vh - 60px);  /* Adjust for fixed navbar */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing);
+}
+
+h1 {
+  font-size: 3em;
+  color: var(--dark);
+  margin-bottom: var(--spacing);
+}
+
+p {
+  font-size: 1.2em;
+  color: #555;
+  margin-bottom: var(--spacing);
+}
+
+.landing-buttons {
+  display: flex;
+  gap: var(--spacing);
+  margin-top: var(--spacing);
+}
+
+.landing-buttons button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.landing-buttons button:hover {
+  background-color: #0056b3;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 300px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: -300px;
+  background: white;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  transition: right 0.3s;
+  z-index: 1000;
+  padding: var(--spacing);
+  box-sizing: border-box;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+/* API Settings Section */
+.api-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.api-section label {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.api-section input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+#saveApiKeys {
+  background-color: var(--primary);
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#saveApiKeys:hover {
+  background-color: #0056b3;
+}
+
+/* Loading Spinner for Sidebar */
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 123, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #007BFF;
+  animation: spin 1s ease-in-out infinite;
+  margin-top: 15px;
+}
+
+/* Pulse animation for loading state */
+@keyframes spin {
+to { transform: rotate(360deg); }
+}
+
+/* General Hidden State */
+.hidden {
+  display: none !important;
+}

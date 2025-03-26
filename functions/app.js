@@ -43,21 +43,53 @@ function initNavigation() {
 }
 
 // Define the navigateTo function if it doesn't already exist
-if (typeof window.navigateTo !== 'function') {
-    window.navigateTo = function(pageId) {
-        console.log("Navigating to:", pageId);
-        
-        document.querySelectorAll(".page").forEach(page => {
-            page.style.display = 'none';
-        });
-        
-        const targetPage = document.getElementById(pageId);
-        if (targetPage) {
-            targetPage.style.display = 'block';
-            localStorage.setItem("lastPage", pageId);
-        }
-    };
+window.navigateTo = function(pageId) {
+    console.log("Navigating to:", pageId);
+    
+    // Hide all pages first
+    document.querySelectorAll(".page").forEach(page => {
+        page.style.display = 'none';
+    });
+    
+    // Reset forms and content (except API keys)
+    clearPageContent();
+    
+    // Show the target page
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.style.display = 'block';
+        localStorage.setItem("lastPage", pageId);
+    }
+};
+
+// Add this function to initialize clean state on page load
+function initializeCleanState() {
+    // Clear temporary data on page load
+    clearPageContent();
+    
+    // Re-apply API keys to form inputs
+    loadApiKeys();
+    
+    // Navigate to saved page or default
+    const savedPage = localStorage.getItem("lastPage") || "landing";
+    navigateTo(savedPage);
 }
+
+// Update your DOMContentLoaded handler
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("App initialization started");
+    
+    // Initialize clean state first
+    initializeCleanState();
+    
+    // Then initialize components
+    initNavigation();
+    initInputHandlers();
+    initOutputHandlers();
+    initMakeHandlers();
+    
+    console.log("App initialization completed");
+});
 
 // Input components initialization
 function initInputHandlers() {
@@ -613,3 +645,79 @@ function updateImageInputSelection(sourceType, choiceValue) {
         }
     }
 }
+
+// Function to selectively clear localStorage items while preserving API keys
+function clearLocalStorageExceptAPIKeys() {
+    // Save API keys
+    const apiKey = localStorage.getItem("apiKey");
+    const meshyApiKey = localStorage.getItem("meshyApiKey");
+    const zoocadApiKey = localStorage.getItem("zoocadApiKey");
+    const lastPage = localStorage.getItem("lastPage");
+    
+    // Create a temporary object to store preserved values
+    const preserveValues = {
+        apiKey: apiKey,
+        meshyApiKey: meshyApiKey,
+        zoocadApiKey: zoocadApiKey,
+        lastPage: lastPage
+    };
+    
+    // Clear all localStorage
+    localStorage.clear();
+    
+    // Restore preserved values
+    Object.keys(preserveValues).forEach(key => {
+        if (preserveValues[key]) {
+            localStorage.setItem(key, preserveValues[key]);
+        }
+    });
+    
+    console.log("LocalStorage cleared except API keys and last page");
+}
+
+// Enhanced version of clearPageContent that also clears localStorage temporary data
+function clearAllPageContent() {
+    // First, clear the UI elements
+    clearPageContent();
+    
+    // Then clear localStorage except API keys
+    clearLocalStorageExceptAPIKeys();
+}
+
+// Add this function to initialize clean state on page load
+function initializeCleanState() {
+    // Clear temporary data on page load
+    clearAllPageContent();
+    
+    // Re-apply API keys to form inputs
+    loadApiKeys();
+    
+    // Navigate to saved page or default
+    const savedPage = localStorage.getItem("lastPage") || "landing";
+    navigateTo(savedPage);
+}
+
+// Add this event listener to the DOMContentLoaded function in app.js
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCleanState();
+    
+    // Add clear data button to sidebar if desired
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar) {
+        const clearDataBtn = document.createElement('button');
+        clearDataBtn.textContent = "Reset All Data";
+        clearDataBtn.className = "reset-button";
+        clearDataBtn.style.marginTop = "20px";
+        clearDataBtn.style.backgroundColor = "#dc3545";
+        clearDataBtn.style.color = "white";
+        
+        clearDataBtn.addEventListener('click', function() {
+            if (confirm("This will reset all temporary data but keep your API keys. Continue?")) {
+                clearAllPageContent();
+                alert("All temporary data has been cleared.");
+            }
+        });
+        
+        sidebar.appendChild(clearDataBtn);
+    }
+});
