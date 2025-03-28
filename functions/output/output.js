@@ -1,3 +1,8 @@
+import { generateTextOutput } from './textOutput.js';
+import { generateImageOutput } from './imageOutput.js';
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     if (!document.getElementById("ideate")) return; // don't run on make.html
     console.log("Output.js loaded and running");
@@ -204,86 +209,13 @@ async function generateOutput() {
 
     try {
         if (outputType === "text") {
-            const endpoint = "https://api.openai.com/v1/chat/completions";
-            console.log("Generating text output");
-        
-            try {
-                const response = await fetch(endpoint, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${apiKey}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: "gpt-4",
-                        messages: [{ role: "user", content: inputText }],
-                        max_tokens: 200
-                    })
-                });
-        
-                const result = await response.json();
-                console.log("API response received:", result);
-                
-                if (result.choices && result.choices.length > 0 && result.choices[0].message) {
-                    outputBox.value = result.choices[0].message.content.trim();
-                    outputBox.classList.remove("hidden");
-                    outputImage.classList.add("hidden");
-                    downloadButton.classList.add("hidden");
-                    output3D.classList.add("hidden");
-                    console.log("Text output displayed");
-                } else {
-                    outputBox.value = "Error: No valid response from API.";
-                    outputBox.classList.remove("hidden");
-                    console.error("Invalid API response:", result);
-                }
-            } catch (error) {
-                console.error("Error generating text:", error);
-                outputBox.value = "Error generating output: " + error.message;
-                outputBox.classList.remove("hidden");
-            }
+            await generateTextOutput(apiKey, inputText);
+            return;
         } else if (outputType === "image") {
-            const endpoint = "https://api.openai.com/v1/images/generations";
-            console.log("Generating image output");
-            
-            try {
-                const response = await fetch(endpoint, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${apiKey}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: "dall-e-2",
-                        prompt: inputText,
-                        n: 1,
-                        size: "1024x1024"
-                    })
-                });
-
-                const result = await response.json();
-                console.log("API response received:", result);
-                
-                if (result.data && result.data.length > 0) {
-                    outputImage.src = result.data[0].url;
-                    outputImage.classList.remove("hidden");
-                    outputBox.classList.add("hidden");
-                    downloadButton.classList.remove("hidden");
-                    downloadButton.setAttribute("data-image-url", result.data[0].url);
-                    output3D.classList.add("hidden");
-                    console.log("Image output displayed");
-                } else {
-                    outputImage.classList.add("hidden");
-                    outputBox.value = result.error?.message || "Error: No image generated.";
-                    outputBox.classList.remove("hidden");
-                    downloadButton.classList.add("hidden");
-                    console.error("Invalid API response:", result);
-                }
-            } catch (error) {
-                console.error("Error generating image:", error);
-                outputBox.value = "Error generating output: " + error.message;
-                outputBox.classList.remove("hidden");
-            }
-        } else if (outputType === "meshy") {
+            await generateImageOutput(apiKey, inputText);
+            return;
+        }
+         else if (outputType === "meshy") {
             // Generate 3D model using Meshy API
             console.log("Generating 3D model with Meshy");
             
