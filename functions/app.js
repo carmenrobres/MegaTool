@@ -699,26 +699,9 @@ function initializeCleanState() {
 }
 
 // Add this event listener to the DOMContentLoaded function in app.js
-document.addEventListener('DOMContentLoaded', function() {
-    initializeCleanState();
-    
-    // Add clear data button to sidebar if desired
-    const sidebar = document.getElementById("sidebar");
-    if (sidebar) {
-        const clearDataBtn = document.createElement('button');
-        clearDataBtn.textContent = "Reset All Data";
-        clearDataBtn.className = "reset-button";
-        clearDataBtn.style.marginTop = "20px";
-        clearDataBtn.style.backgroundColor = "#dc3545";
-        clearDataBtn.style.color = "white";
-        
-        clearDataBtn.addEventListener('click', function() {
-            if (confirm("This will reset all temporary data but keep your API keys. Continue?")) {
-                clearAllPageContent();
-                alert("All temporary data has been cleared.");
-            }
-        });
-        
-        sidebar.appendChild(clearDataBtn);
+document.getElementById("resetData")?.addEventListener("click", function () {
+    if (confirm("This will reset all temporary data but keep your API keys. Continue?")) {
+        clearAllPageContent();
+        alert("All temporary data has been cleared.");
     }
 });

@@ -7,6 +7,7 @@
     
     <!-- Link to Landing CSS -->
     <link rel="stylesheet" href="pages/css/landing.css">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
     
     <!-- Optional Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22black%22><text y=%221em%22 font-size=%2224%22>🤖</text></svg>">
@@ -36,20 +37,51 @@
             <input type="password" id="meshyApiKey" placeholder="Enter your Meshy API key">
 
             <button id="saveApiKeys">Save API Keys</button>
+            <button id="resetData">Reset All Data</button>
+
         </div>
     </div>
 
     <!-- Landing Page Content -->
     <main>
-        <div id="landing" class="page">
-            <h1>Welcome to MegaTool</h1>
-            <p>Your creative companion for prototyping</p>
-            <div class="landing-buttons">
-                <button onclick="window.location.href='pages/ideate.html'">Start Ideating</button>
-                <button onclick="window.location.href='pages/make.html'">Make Something</button>
+        <main>
+            <!-- DARK HERO SECTION -->
+            <section class="hero-section">
+              <div class="landing-content">
+                <h1>UNLOCK YOUR IDEAS</h1>
+                <h2 class="subheading">Your AI companion for IP prototyping</h2>
+                <p>This research-based demo explores how AI can support creators in their early-stage design and prototyping process—especially those unfamiliar with technical tools.
+                    Start by generating ideas with text or images, then bring your concepts to life with a 3D model and printing guidance.</p>
+                <div class="landing-buttons">
+                  <button class="cta-button">🚀 Start Ideating</button>
+                  <button class="cta-button">🛠️ Make Something</button>
+                </div>
+              </div>
+            </section>
+          
+            <!-- WHITE INFO SECTION -->
+            <section class="info-strip">
+              <div class="info-column">
+                <div class="info-icon">🧠</div>
+                <h3>Text or Image → Output</h3>
+                <p>Use AI to transform inputs into useful design artifacts.</p>
+              </div>
+              <div class="info-column">
+                <div class="info-icon">🧩</div>
+                <h3>Generate 3D Models</h3>
+                <p>Convert creative assets into mesh-ready models.</p>
+              </div>
+              <div class="info-column">
+                <div class="info-icon">🖨️</div>
+                <h3>Prep for 3D Printing</h3>
+                <p>Analyze shape, structure, and printability with AI.</p>
+              </div>
+            </section>
+          
+            <div class="caption-container">
+              <p class="caption">This tool is part of a thesis project (last updated March 2025) to explore how AI can assist novice creators in prototyping workflows</p>
             </div>
-        </div>
-    </main>
+          </main>
 
     <!-- Load the necessary JavaScript files -->
     <script src="functions/navigation.js"></script>
