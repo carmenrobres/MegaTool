@@ -1,76 +1,203 @@
 :root {
-  --primary: #007bff;
+  --primary: #2ECCB3;           /* Mint green */
   --secondary: #6c757d;
   --light: #f8f9fa;
-  --dark: #343a40;
+  --dark: #222;
   --spacing: 24px;
+  --font-family: 'Satoshi', sans-serif;
 }
+
 
 body {
   margin: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-family);
   background-color: var(--light);
+  color: var(--dark);
 }
+
 
 /* Constant Elements */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--dark);
-    padding: 0 var(--spacing);
-    height: 60px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 0 var(--spacing);
+  height: 70px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid #eee;
 }
 
 .navbar-brand {
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
+  color: var(--dark);
+  font-size: 28px;
+  font-weight: 700;
+  text-decoration: none;
 }
 
 .navbar-links {
-    display: flex;
-    gap: var(--spacing);
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .navbar button {
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 8px 16px;
-    font-size: 16px;
+  background-color: transparent;
+  color: var(--primary);
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 500;
+  border: 2px solid var(--primary);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .navbar button:hover {
-    background: rgba(255,255,255,0.1);
-    border-radius: 4px;
+  background-color: var(--primary);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(46, 204, 179, 0.2);
 }
+
+
+button {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 10px rgba(46, 204, 179, 0.2);
+}
+
 
 /* Sidebar */
 .sidebar {
-    width: 300px;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    right: -300px;
-    background: white;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    transition: right 0.3s;
-    z-index: 1000;
-    padding: var(--spacing);
-    box-sizing: border-box;
+  width: 300px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: -300px;
+  background: #ffffff;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  padding: 30px 24px;
+  box-sizing: border-box;
+  border-radius: 16px 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px 28px;         /* More space inside */
+  overflow-y: auto;           /* Allow scroll if content grows */
+  word-break: break-word;     /* Prevent words from spilling */
 }
+
+.sidebar h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #222;
+}
+
 
 .sidebar.open {
-    right: 0;
+right: 0;
 }
 
+#openSidebar {
+  border-color: #888;
+  color: #888;
+}
+
+#openSidebar:hover {
+  background: #888;
+  color: white;
+}
+
+
+/* API Settings Section */
+.api-section {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.api-section label {
+  font-weight: 500;
+  color: #444;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+
+.api-section input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid #ccc;
+  font-size: 14px;
+  transition: border 0.3s ease;
+}
+
+.api-section input:focus {
+  outline: none;
+  border-color: #2ECCB3;
+  box-shadow: 0 0 0 2px rgba(46, 204, 179, 0.2);
+}
+
+#closeSidebar {
+  background: transparent;
+  border: none;
+  color: #999;
+  font-size: 24px;
+  align-self: flex-end;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+#closeSidebar:hover {
+  color: #2ECCB3;
+}
+
+
+
+#saveApiKeys {
+  background: transparent;
+  color: #2ECCB3;
+  border: 2px solid #2ECCB3;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#saveApiKeys:hover {
+  background: #2ECCB3;
+  color: white;
+  box-shadow: 0 4px 10px rgba(46, 204, 179, 0.2);
+}
+
+/* Loading Spinner for Sidebar */
+.loading-spinner {
+width: 50px;
+height: 50px;
+border: 5px solid rgba(0, 123, 255, 0.3);
+border-radius: 50%;
+border-top-color: #007BFF;
+animation: spin 1s ease-in-out infinite;
+margin-top: 15px;
+}
 .page {
   margin-top: 60px;
   padding: var(--spacing);
@@ -92,12 +219,14 @@ body {
 }
 
 .column {
-    background: white;
-    border-radius: 8px;
-    padding: var(--spacing);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    overflow-y: auto;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: var(--spacing);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+  overflow-y: auto;
 }
+
 
 .column h2 {
     margin-top: 0;
@@ -138,6 +267,46 @@ select, textarea, button {
     border: 1px solid #ddd;
     box-sizing: border-box;
 }
+
+/* === Custom Styling Overrides === */
+
+/* Rounded dropdowns with black thin border */
+select {
+  border-radius: 999px !important;
+  border: 1.5px solid black !important;
+  padding: 10px 16px !important;
+  background-color: white;
+  color: black;
+}
+
+/* Pill-style buttons with thin outline */
+button,
+#refineButton,
+#refineButtonAudio,
+#generateOutput,
+#downloadImage,
+#download3D {
+  border-radius: 999px !important;
+  border: 1.5px solid var(--primary) !important;
+  padding: 10px 22px !important;
+  background-color: transparent !important;
+  color: var(--primary) !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* On hover - subtle fill */
+button:hover,
+#refineButton:hover,
+#refineButtonAudio:hover,
+#generateOutput:hover,
+#downloadImage:hover,
+#download3D:hover {
+  background-color: var(--primary) !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(46, 204, 179, 0.15);
+}
+
 
 /* Input Section Styles */
 .select-control {
